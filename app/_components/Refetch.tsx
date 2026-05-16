@@ -16,7 +16,11 @@ const Refetch = () => {
     }
   };
 
-  return <button onClick={refetch}>Refetch</button>;
+  return (
+    <button onClick={refetch} className="cursor-pointer">
+      <div className="my-4 text-[#9198a1]">⚠️ Refetch</div>
+    </button>
+  );
 };
 
 export default Refetch;

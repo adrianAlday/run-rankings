@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "",
@@ -15,7 +16,13 @@ const Layout = ({
     <html lang="en" className={"antialiased"}>
       <body>
         <div className="flex justify-center">
-          <div className="w-80">{children}</div>
+          <div className="w-80">
+            <Link href={"/"}>
+              <div className="text-sm font-semibold my-4">Run Rankings</div>
+            </Link>
+
+            {children}
+          </div>
         </div>
       </body>
     </html>

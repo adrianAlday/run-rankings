@@ -1,54 +1,28 @@
-import { createClient } from "@/utils/supabase/client";
-import { isDev } from "@/utils/isDev";
-import Refetch from "./_components/Refetch";
+import Link from "next/link";
 
 const HomePage = async () => {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("shoes").select("*");
-  if (error) {
-    console.log(error);
-  }
-
-  const chunkedData: { [key: string]: { [key: string]: string | number }[] } =
-    {};
-
-  data
-    ?.sort(
-      (a, b) =>
-        ((b["cold_energy_returned_fore"] as number) || 0) -
-          ((a["cold_energy_returned_fore"] as number) || 0) ||
-        (a.name as string).localeCompare(b.name as string),
-    )
-    .forEach((shoe) => {
-      if (!chunkedData[shoe.type]) {
-        chunkedData[shoe.type] = [];
-      }
-      chunkedData[shoe.type] = [...chunkedData[shoe.type], shoe];
-    });
-
   return (
     <div>
       <main>
-        {isDev && <Refetch />}
-
-        <div>road</div>
-
-        {chunkedData.road.map((shoe) => (
-          <div key={shoe.name}>
-            {shoe.name}, {shoe.cold_energy_returned_fore}
-          </div>
-        ))}
-
-        <div>trail</div>
-
-        {chunkedData.trail.map((shoe) => (
-          <div key={shoe.name}>
-            {shoe.name}, {shoe.cold_energy_returned_fore}
-          </div>
-        ))}
+        <Link href={"/shoes"}>
+          <div className="text-sm font-semibold my-4">Shoes</div>
+        </Link>
       </main>
     </div>
   );
 };
 
 export default HomePage;
+
+// favicon
+// page titles
+// emojis in homepage link
+// make map of value variable name to db column name
+// display key name
+// explain math
+// bar color changes with value, apply by building rgb and passing to style
+// use vscode colors?
+// red yellow green blue purple
+// use comment color for lighter gray
+// fade out shsoes that are beaten on bounce price and weight
+// also show absorption for trail?
