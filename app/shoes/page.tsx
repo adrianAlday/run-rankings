@@ -26,9 +26,9 @@ const ShoesPage = async () => {
 
   const energyKey = "cold_energy_returned_fore";
 
-  const weightPenalty = 15;
+  const weightPenalty = 20;
 
-  const processedData = data
+  const initialProcessedData = data
     .filter(
       (shoe) =>
         shoe[energyKey] &&
@@ -39,16 +39,23 @@ const ShoesPage = async () => {
       ...shoe,
       price: shoe.deal_price || shoe.retail_price,
       score: shoe[energyKey] - (shoe.weight * weightPenalty) / 100,
-    })) as unknown as Shoe[];
+    }));
 
-  const values = processedData.map((shoe) => shoe.score);
-  const maximumValue = Math.max(...values);
-  const minimumValue = Math.min(...values);
+  const initialValues = initialProcessedData.map((shoe) => shoe.score);
+  const initialMinimumValue = Math.min(...initialValues);
+  const initialMaximumValue = Math.max(...initialValues);
+  const targetMinimumValue = 1;
+  const tagetMaximumValue = 99;
+  const adjustForBottomValue = (value: number) =>
+    value - initialMinimumValue + targetMinimumValue;
+  const adjustForTopValue = (value: number) =>
+    (adjustForBottomValue(value) / adjustForBottomValue(initialMaximumValue)) *
+    tagetMaximumValue;
 
-  const lastUpdated = processedData
-    .map((shoe) => shoe.updated_at)
-    .sort()
-    .at(-1) as string;
+  const processedData = initialProcessedData.map((shoe) => ({
+    ...shoe,
+    score: adjustForTopValue(shoe.score),
+  })) as unknown as Shoe[];
 
   const dataByType = processedData
     ?.sort(
@@ -62,10 +69,19 @@ const ShoesPage = async () => {
       },
       {} as { [key: string]: Shoe[] },
     );
-
   const dataEntries = Object.entries(dataByType);
 
-  const minimumWidth = 10;
+  const paretoUrl = "https://en.wikipedia.org/wiki/Pareto_front";
+
+  const lastUpdated = processedData
+    .map((shoe) => shoe.updated_at)
+    .sort()
+    .at(-1) as string;
+
+  const capitalize = (value: string) =>
+    value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const minimumWidth = 5;
 
   const valueColors: ValueColors = [
     [25, [239, 130, 119]], // red
@@ -97,11 +113,6 @@ const ShoesPage = async () => {
         lowerColor + (higherCriteria[1][index] - lowerColor) * split,
     );
   };
-
-  const paretoUrl = "https://en.wikipedia.org/wiki/Pareto_front";
-
-  const capitalize = (value: string) =>
-    value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
   return (
     <div>
@@ -176,18 +187,26 @@ const ShoesPage = async () => {
                 const value = shoe.score;
 
                 const width = value
-                  ? (100 * (value - minimumValue + minimumWidth)) /
-                    (maximumValue - minimumValue + minimumWidth)
+                  ? (100 * (value - targetMinimumValue + minimumWidth)) /
+                    (tagetMaximumValue - targetMinimumValue + minimumWidth)
                   : minimumWidth;
 
                 const backgroundColor = getValueRgb(value, valueColors);
 
-                const isNotParetoEfficient = shoes.some(
+                const surpassedBy = shoes.filter(
                   (otherShoe) =>
                     otherShoe[energyKey] > shoe[energyKey] &&
                     otherShoe.weight < shoe.weight &&
                     otherShoe.price < shoe.price,
                 );
+                const isNotParetoEfficient = surpassedBy.length;
+                if (isDev && isNotParetoEfficient) {
+                  console.log(
+                    shoe.name,
+                    "surpassedBy",
+                    surpassedBy.map((shoe) => shoe.name)[0],
+                  );
+                }
 
                 return (
                   <div
