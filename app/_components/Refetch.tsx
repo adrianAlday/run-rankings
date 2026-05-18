@@ -18,7 +18,7 @@ const Refetch = () => {
 
   return (
     <button onClick={refetch} className="cursor-pointer">
-      <div className="my-4 text-[rgb(147,148,149)]">⚠️ Refetch</div>
+      <div className="my-8 text-[rgb(147,148,149)]">⚠️ Refetch</div>
     </button>
   );
 };

@@ -3,13 +3,16 @@ import { isDev } from "@/utils/isDev";
 import Refetch from "../_components/Refetch";
 import Link from "next/link";
 import { Metadata } from "next";
+import { DateTime } from "luxon";
 
-type Shoe = { name: string; url: string } & { [key: string]: number };
+type Shoe = { name: string; updated_at: string; url: string } & {
+  [key: string]: number;
+};
 
 type ValueColors = [number, number[]][];
 
 export const metadata: Metadata = {
-  title: "Run Rankings - 👠 Shoes",
+  title: "Shoes - Run Rankings",
 };
 
 const ShoesPage = async () => {
@@ -22,11 +25,21 @@ const ShoesPage = async () => {
 
   const valueKey = "cold_energy_returned_fore";
 
-  const filteredData = data.filter((shoe) => shoe[valueKey]);
+  const filteredData = data.filter(
+    (shoe) => shoe[valueKey] && shoe.weight && shoe.price,
+  );
 
   const values = filteredData.map((shoe) => shoe[valueKey]);
   const maximumValue = Math.max(...values);
   const minimumValue = Math.min(...values);
+  const [updatedDayOfWeek, updatedLocalTime] = DateTime.fromISO(
+    filteredData
+      .map((shoe) => shoe.updated_at)
+      .sort()
+      .at(-1) as string,
+  )
+    .toFormat("EEEE,t")
+    .split(",");
 
   const minimumWidth = 5;
 
@@ -77,13 +90,9 @@ const ShoesPage = async () => {
 
   const paretoUrl = "https://en.wikipedia.org/wiki/Pareto_front";
 
-  const showRefetch = false;
-
   return (
     <div>
       <main>
-        {isDev && showRefetch && <Refetch />}
-
         <div className="my-8 text-xs">
           <div className="my-4">
             <div className="my-1">
@@ -118,6 +127,20 @@ const ShoesPage = async () => {
             <Link target="_blank" href={"https://runrepeat.com"}>
               <div>
                 Test data from <span className="underline">RunRepeat</span>
+              </div>
+            </Link>
+          </div>
+
+          <div className="my-4">
+            <Link
+              target="_blank"
+              href={
+                "https://github.com/adrianAlday/run-rankings/blob/main/vercel.json"
+              }
+            >
+              <div>
+                Updated {updatedDayOfWeek},{" "}
+                <span className="underline">{updatedLocalTime}</span>
               </div>
             </Link>
           </div>
@@ -170,6 +193,8 @@ const ShoesPage = async () => {
             })}
           </div>
         ))}
+
+        {isDev && <Refetch />}
       </main>
     </div>
   );
