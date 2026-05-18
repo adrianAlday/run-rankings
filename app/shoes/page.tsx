@@ -4,6 +4,7 @@ import Refetch from "../_components/Refetch";
 import Link from "next/link";
 import { Metadata } from "next";
 import { DateTime } from "luxon";
+import LastUpdated from "../_components/LastUpdated";
 
 type Shoe = { name: string; updated_at: string; url: string } & {
   [key: string]: number;
@@ -32,14 +33,10 @@ const ShoesPage = async () => {
   const values = filteredData.map((shoe) => shoe[valueKey]);
   const maximumValue = Math.max(...values);
   const minimumValue = Math.min(...values);
-  const [updatedDayOfWeek, updatedLocalTime] = DateTime.fromISO(
-    filteredData
-      .map((shoe) => shoe.updated_at)
-      .sort()
-      .at(-1) as string,
-  )
-    .toFormat("EEEE,t")
-    .split(",");
+  const lastUpdated = filteredData
+    .map((shoe) => shoe.updated_at)
+    .sort()
+    .at(-1) as string;
 
   const minimumWidth = 5;
 
@@ -132,17 +129,7 @@ const ShoesPage = async () => {
           </div>
 
           <div className="my-4">
-            <Link
-              target="_blank"
-              href={
-                "https://github.com/adrianAlday/run-rankings/blob/main/vercel.json"
-              }
-            >
-              <div>
-                Updated {updatedDayOfWeek},{" "}
-                <span className="underline">{updatedLocalTime}</span>
-              </div>
-            </Link>
+            <LastUpdated lastUpdated={lastUpdated} />
           </div>
         </div>
 
