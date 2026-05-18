@@ -3,7 +3,6 @@ import { isDev } from "@/utils/isDev";
 import Refetch from "../_components/Refetch";
 import Link from "next/link";
 import { Metadata } from "next";
-import { DateTime } from "luxon";
 import LastUpdated from "../_components/LastUpdated";
 
 type Shoe = { name: string; updated_at: string; url: string } & {
