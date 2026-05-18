@@ -154,10 +154,10 @@ export const GET = async (request: Request) => {
         shoeData[shoeName]["Midsole softness in cold (%)"]
       ) {
         shoeData[shoeName][`Cold shock absorption ${footPart}`] =
-          ((shoeData[shoeName][`Shock absorption ${footPart}`] as number) *
-            100) /
-          (100 +
-            (shoeData[shoeName]["Midsole softness in cold (%)"] as number));
+          (shoeData[shoeName][`Shock absorption ${footPart}`] as number) *
+          (1 -
+            (shoeData[shoeName]["Midsole softness in cold (%)"] as number) /
+              100);
       }
 
       if (
@@ -165,10 +165,10 @@ export const GET = async (request: Request) => {
         shoeData[shoeName]["Midsole softness in cold (%)"]
       ) {
         shoeData[shoeName][`Cold energy returned ${footPart}`] =
-          ((shoeData[shoeName][`Energy returned ${footPart}`] as number) *
-            100) /
-          (100 +
-            (shoeData[shoeName]["Midsole softness in cold (%)"] as number));
+          (shoeData[shoeName][`Energy returned ${footPart}`] as number) *
+          (1 -
+            (shoeData[shoeName]["Midsole softness in cold (%)"] as number) /
+              100);
       }
     }
   }

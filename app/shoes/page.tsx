@@ -4,6 +4,7 @@ import Refetch from "../_components/Refetch";
 import Link from "next/link";
 import { Metadata } from "next";
 import LastUpdated from "../_components/LastUpdated";
+import ScrollToButton from "../_components/ScrollToButton";
 
 type Shoe = { name: string; type: string; updated_at: string; url: string } & {
   [key: string]: number;
@@ -25,7 +26,7 @@ const ShoesPage = async () => {
 
   const energyKey = "cold_energy_returned_fore";
 
-  const weightPenalty = 0.15;
+  const weightPenalty = 15;
 
   const processedData = data
     .filter(
@@ -37,7 +38,7 @@ const ShoesPage = async () => {
     .map((shoe) => ({
       ...shoe,
       price: shoe.deal_price || shoe.retail_price,
-      score: shoe[energyKey] - shoe.weight * weightPenalty,
+      score: shoe[energyKey] - (shoe.weight * weightPenalty) / 100,
     })) as unknown as Shoe[];
 
   const values = processedData.map((shoe) => shoe.score);
@@ -61,6 +62,8 @@ const ShoesPage = async () => {
       },
       {} as { [key: string]: Shoe[] },
     );
+
+  const dataEntries = Object.entries(dataByType);
 
   const minimumWidth = 10;
 
@@ -97,6 +100,9 @@ const ShoesPage = async () => {
 
   const paretoUrl = "https://en.wikipedia.org/wiki/Pareto_front";
 
+  const capitalize = (value: string) =>
+    value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+
   return (
     <div>
       <main>
@@ -109,14 +115,14 @@ const ShoesPage = async () => {
               <span className="italic">weight</span>
             </div>
 
-            <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] text-[11px] font-mono">
+            <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] font-mono">
               <div>energy_absorbed_forefoot</div>
 
               <div>* energy_return_rate_forefoot</div>
 
-              <div>* 100 / ( 100 + hardness_increase_in_cold )</div>
+              <div>* ( 100% - hardness_increase_in_cold )</div>
 
-              <div>- weight * {weightPenalty.toFixed(2)}</div>
+              <div>- weight * {weightPenalty}%</div>
             </div>
           </div>
 
@@ -147,57 +153,69 @@ const ShoesPage = async () => {
           </div>
         </div>
 
-        {Object.entries(dataByType).map(([type, shoes]) => (
-          <div key={type}>
-            <div className="my-8 text-sm font-semibold">
-              {type
-                .toLowerCase()
-                .replace(/\b\w/g, (char) => char.toUpperCase())}
-            </div>
+        {dataEntries.map(([type, shoes], index) => {
+          const typeToScrollTo =
+            dataEntries[dataEntries.length === index + 1 ? 0 : index + 1][0];
 
-            {shoes.map((shoe) => {
-              const value = shoe.score;
+          return (
+            <div key={type} id={type}>
+              <div className="my-8 flex justify-between">
+                <div className="text-sm font-semibold">{capitalize(type)}</div>
 
-              const width = value
-                ? (100 * (value - minimumValue + minimumWidth)) /
-                  (maximumValue - minimumValue + minimumWidth)
-                : minimumWidth;
+                <ScrollToButton id={typeToScrollTo}>
+                  <div className="text-xs">
+                    jump to{" "}
+                    <span className="underline">
+                      {capitalize(typeToScrollTo)}
+                    </span>
+                  </div>
+                </ScrollToButton>
+              </div>
 
-              const backgroundColor = getValueRgb(value, valueColors);
+              {shoes.map((shoe) => {
+                const value = shoe.score;
 
-              const isNotParetoEfficient = shoes.some(
-                (otherShoe) =>
-                  otherShoe[energyKey] > shoe[energyKey] &&
-                  otherShoe.weight < shoe.weight &&
-                  otherShoe.price < shoe.price,
-              );
+                const width = value
+                  ? (100 * (value - minimumValue + minimumWidth)) /
+                    (maximumValue - minimumValue + minimumWidth)
+                  : minimumWidth;
 
-              return (
-                <div
-                  key={shoe.name}
-                  className={`my-4 ${isNotParetoEfficient ? "opacity-25" : "opacity-100"}`}
-                >
-                  <Link
-                    target="_blank"
-                    href={`https://runrepeat.com/${shoe.runrepeat_slug}`}
+                const backgroundColor = getValueRgb(value, valueColors);
+
+                const isNotParetoEfficient = shoes.some(
+                  (otherShoe) =>
+                    otherShoe[energyKey] > shoe[energyKey] &&
+                    otherShoe.weight < shoe.weight &&
+                    otherShoe.price < shoe.price,
+                );
+
+                return (
+                  <div
+                    key={shoe.name}
+                    className={`my-4 ${isNotParetoEfficient ? "opacity-25" : "opacity-100"}`}
                   >
-                    <div className="text-sm font-semibold">{shoe.name}</div>
-
-                    <div
-                      className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)]`}
-                      style={{
-                        width: `${width}%`,
-                        backgroundColor: `rgb(${backgroundColor.join(",")})`,
-                      }}
+                    <Link
+                      target="_blank"
+                      href={`https://runrepeat.com/${shoe.runrepeat_slug}`}
                     >
-                      {Math.round(shoe.score)}
-                    </div>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                      <div className="text-sm font-semibold">{shoe.name}</div>
+
+                      <div
+                        className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)]`}
+                        style={{
+                          width: `${width}%`,
+                          backgroundColor: `rgb(${backgroundColor.join(",")})`,
+                        }}
+                      >
+                        {Math.round(shoe.score)}
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
 
         {isDev && <Refetch />}
       </main>

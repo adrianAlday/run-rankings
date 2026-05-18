@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   description: "",
 };
 
-const Layout = ({
-  children,
-}: Readonly<{
+type LayoutProps = {
   children: React.ReactNode;
-}>) => {
+};
+
+const Layout = ({ children }: Readonly<LayoutProps>) => {
   return (
     <html lang="en" className={"antialiased"}>
       <body>
