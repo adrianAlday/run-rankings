@@ -14,13 +14,43 @@ const testIds = [
   66, // Energy return forefoot
   65, // Energy return heel
   13, // Midsole softness in cold (%)
-  24, // Weight
-  52, // Price
 ];
 
+const getCategoryData = async (
+  offset = 0,
+  category = 2,
+): Promise<{
+  products: {
+    [key: string]: string | number;
+  }[];
+}> => {
+  await new Promise((resolve) => setTimeout(resolve, 6 * 1000));
+
+  const url = `https://api.runrepeat.com/api/category/documents?c_id=${category}&orderBy=newest&size=30&from=${offset}`;
+
+  if (isDev) {
+    console.log(url);
+  }
+
+  return await axios({
+    method: "get",
+    url,
+  })
+    .then((response) => {
+      return response.data;
+    })
+    .catch(async (error) => {
+      console.log(error);
+
+      await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
+
+      return await getCategoryData(offset, category);
+    });
+};
+
 const getTestData = async (
-  typeProductId: number,
   testId: number,
+  typeProductId: number,
 ): Promise<{
   headers: string[];
   rows: { [key: string]: string | number }[][];
@@ -45,7 +75,7 @@ const getTestData = async (
 
       await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
-      return await getTestData(typeProductId, testId);
+      return await getTestData(testId, typeProductId);
     });
 };
 
@@ -61,11 +91,37 @@ export const GET = async (request: Request) => {
     }
   }
 
-  const shoeData: { [key: string]: { [key: string]: string | number } } = {};
+  const shoeData: {
+    [key: string]: { [key: string]: string | number };
+  } = {};
+
+  for (let offset = 0; ; ) {
+    const categoryData = await getCategoryData(offset);
+    const { products } = categoryData;
+
+    for (const product of products) {
+      const { min_price, msrp, name, slug, weight } = product;
+
+      shoeData[name] = {
+        ...shoeData[name],
+        min_price,
+        msrp,
+        name,
+        slug,
+        weight,
+      };
+    }
+
+    if (products.length === 0) {
+      break;
+    }
+
+    offset = offset + 30;
+  }
 
   for (const [type, typeProductId] of Object.entries(typeProductIds)) {
     for (const testId of testIds) {
-      const testData = await getTestData(typeProductId, testId);
+      const testData = await getTestData(testId, typeProductId);
 
       const testName = testData.headers[0];
 
@@ -75,8 +131,6 @@ export const GET = async (request: Request) => {
         shoeData[shoeName] = {
           ...shoeData[shoeName],
           type,
-          name: shoeName,
-          url: shoeTest[1].url,
           [testName]: shoeTest[0].value,
         };
       }
@@ -126,43 +180,45 @@ export const GET = async (request: Request) => {
       : a.type === "trail" && b.type === "trail"
         ? ((b["Cold shock absorption forefoot"] as number) || 0) -
           ((a["Cold shock absorption forefoot"] as number) || 0)
-        : (a.type as string).localeCompare(b.type as string),
+        : ((a.type || "") as string).localeCompare((b.type || "") as string),
   );
 
   const supabase = await createClient();
   const insertResponse = await supabase.from("shoes").upsert(
     values.map((value) => {
       const {
-        Weight: weight,
-        Price: price,
-        "Shock absorption forefoot": shock_absorption_fore,
-        "Shock absorption heel": shock_absorption_heel,
-        "Energy return forefoot": energy_return_fore,
-        "Energy return heel": energy_return_heel,
-        "Midsole softness in cold (%)": cold_softness,
+        slug: runrepeat_slug,
+        msrp: retail_price,
+        min_price: deal_price,
+        "Shock absorption forefoot": shock_absorbed_fore,
+        "Shock absorption heel": shock_absorbed_heel,
+        "Energy return forefoot": energy_return_rate_fore,
+        "Energy return heel": energy_return_rate_heel,
         "Energy returned forefoot": energy_returned_fore,
         "Energy returned heel": energy_returned_heel,
+        "Midsole softness in cold (%)": cold_hardness_increase,
         "Cold energy returned forefoot": cold_energy_returned_fore,
-        "Cold energy returned heel": cold_energy_returned_feel,
-        "Cold shock absorption forefoot": cold_shock_absorption_fore,
-        "Cold shock absorption heel": cold_shock_absorption_heel,
+        "Cold energy returned heel": cold_energy_returned_heel,
+        "Cold shock absorption forefoot": cold_shock_absorbed_fore,
+        "Cold shock absorption heel": cold_shock_absorbed_heel,
         ...rest
       } = value;
 
       return {
-        weight,
-        price,
-        shock_absorption_fore,
-        shock_absorption_heel,
-        energy_return_fore,
-        energy_return_heel,
-        cold_softness,
+        runrepeat_slug,
+        retail_price,
+        deal_price,
+        shock_absorbed_fore,
+        shock_absorbed_heel,
+        energy_return_rate_fore,
+        energy_return_rate_heel,
         energy_returned_fore,
         energy_returned_heel,
+        cold_hardness_increase,
+        cold_shock_absorbed_fore,
+        cold_shock_absorbed_heel,
         cold_energy_returned_fore,
-        cold_energy_returned_feel,
-        cold_shock_absorption_fore,
-        cold_shock_absorption_heel,
+        cold_energy_returned_heel,
         ...rest,
       };
     }),

@@ -26,9 +26,15 @@ const ShoesPage = async () => {
   const energyKey = "cold_energy_returned_fore";
 
   const processedData = data
-    .filter((shoe) => shoe[energyKey] && shoe.weight && shoe.price)
+    .filter(
+      (shoe) =>
+        shoe[energyKey] &&
+        shoe.weight &&
+        (shoe.deal_price || shoe.retail_price),
+    )
     .map((shoe) => ({
       ...shoe,
+      price: shoe.deal_price || shoe.retail_price,
       score: shoe[energyKey] - shoe.weight / 10,
     })) as unknown as Shoe[];
 
@@ -117,7 +123,7 @@ const ShoesPage = async () => {
               <div>
                 <div className="my-1">
                   Grayed out if some other shoe is bouncier, lighter, and
-                  cheaper
+                  currently cheaper
                 </div>
 
                 <div className="my-1 underline">{paretoUrl}</div>
@@ -128,7 +134,8 @@ const ShoesPage = async () => {
           <div className="my-4">
             <Link target="_blank" href={"https://runrepeat.com"}>
               <div>
-                Test data from <span className="underline">RunRepeat</span>
+                Lab data and current prices from{" "}
+                <span className="underline">RunRepeat</span>
               </div>
             </Link>
           </div>
@@ -168,7 +175,10 @@ const ShoesPage = async () => {
                   key={shoe.name}
                   className={`my-4 ${isNotParetoEfficient ? "opacity-25" : "opacity-100"}`}
                 >
-                  <Link target="_blank" href={shoe.url}>
+                  <Link
+                    target="_blank"
+                    href={`https://runrepeat.com/${shoe.runrepeat_slug}`}
+                  >
                     <div className="text-sm font-semibold">{shoe.name}</div>
 
                     <div

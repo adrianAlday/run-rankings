@@ -25,7 +25,6 @@ const HomePage = async () => {
 
 export default HomePage;
 
-// rename column to cold_hardness_increase
 // make map of value variable name to db column name
 // display key name
 // also show absorption for trail?
