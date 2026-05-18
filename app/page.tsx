@@ -18,8 +18,8 @@ const HomePage = async () => {
 
 export default HomePage;
 
+// rename column to cold_hardness_increase
 // make map of value variable name to db column name
 // display key name
-// explain math
-// fade out shsoes that are beaten on bounce price and weight
 // also show absorption for trail?
+// add classnames library

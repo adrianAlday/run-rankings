@@ -20,18 +20,20 @@ const ShoesPage = async () => {
     console.log(error);
   }
 
-  const sortKey = "cold_energy_returned_fore";
+  const valueKey = "cold_energy_returned_fore";
 
-  const values = data?.map((shoe) => shoe[sortKey]);
+  const filteredData = data.filter((shoe) => shoe[valueKey]);
+
+  const values = filteredData.map((shoe) => shoe[valueKey]);
   const maximumValue = Math.max(...values);
   const minimumValue = Math.min(...values);
 
   const minimumWidth = 5;
 
-  const dataByType = data
+  const dataByType = filteredData
     ?.sort(
       (a, b) =>
-        (b[sortKey] || 0) - (a[sortKey] || 0) || a.name.localeCompare(b.name),
+        (b[valueKey] || 0) - (a[valueKey] || 0) || a.name.localeCompare(b.name),
     )
     .reduce(
       (accumulator, shoe) => {
@@ -73,6 +75,8 @@ const ShoesPage = async () => {
     );
   };
 
+  const paretoUrl = "https://en.wikipedia.org/wiki/Pareto_front";
+
   const showRefetch = false;
 
   return (
@@ -80,11 +84,44 @@ const ShoesPage = async () => {
       <main>
         {isDev && showRefetch && <Refetch />}
 
-        <Link href={"https://runrepeat.com"}>
-          <div className="my-8 text-sm font-semibold">
-            Test data from RunRepeat
+        <div className="my-8 text-xs">
+          <div className="my-4">
+            <div className="my-1">
+              Calculation of the energy <span className="italic">absorbed</span>{" "}
+              then <span className="italic">returned</span> in{" "}
+              <span className="italic">cold</span> conditions
+            </div>
+
+            <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] font-mono">
+              <div>shock_absorption_forefoot *</div>
+
+              <div>energy_return_forefoot *</div>
+
+              <div>100 / ( 100 + hardness_increase_in_cold )</div>
+            </div>
           </div>
-        </Link>
+
+          <div className="my-4">
+            <Link target="_blank" href={paretoUrl}>
+              <div>
+                <div className="my-1">
+                  Grayed out if some other shoe is bouncier, lighter, and
+                  cheaper
+                </div>
+
+                <div className="my-1 underline">{paretoUrl}</div>
+              </div>
+            </Link>
+          </div>
+
+          <div className="my-4">
+            <Link target="_blank" href={"https://runrepeat.com"}>
+              <div>
+                Test data from <span className="underline">RunRepeat</span>
+              </div>
+            </Link>
+          </div>
+        </div>
 
         {Object.entries(dataByType).map(([type, shoes]) => (
           <div key={type}>
@@ -95,7 +132,7 @@ const ShoesPage = async () => {
             </div>
 
             {shoes.map((shoe) => {
-              const value = shoe[sortKey];
+              const value = shoe[valueKey];
               const width = value
                 ? (100 * (value - minimumValue + minimumWidth)) /
                   (maximumValue - minimumValue + minimumWidth)
@@ -103,8 +140,18 @@ const ShoesPage = async () => {
 
               const backgroundColor = getValueRgb(value, valueColors);
 
+              const isNotParetoEfficient = shoes.some(
+                (otherShoe) =>
+                  otherShoe[valueKey] > shoe[valueKey] &&
+                  otherShoe.weight < shoe.weight &&
+                  otherShoe.price < shoe.price,
+              );
+
               return (
-                <div key={shoe.name} className="my-4">
+                <div
+                  key={shoe.name}
+                  className={`my-4 ${isNotParetoEfficient ? "opacity-25" : "opacity-100"}`}
+                >
                   <Link target="_blank" href={shoe.url}>
                     <div className="text-sm font-semibold">{shoe.name}</div>
 
@@ -115,7 +162,7 @@ const ShoesPage = async () => {
                         backgroundColor: `rgb(${backgroundColor.join(",")})`,
                       }}
                     >
-                      {Math.round(shoe[sortKey]) || "-"}
+                      {Math.round(shoe[valueKey]) || "-"}
                     </div>
                   </Link>
                 </div>
