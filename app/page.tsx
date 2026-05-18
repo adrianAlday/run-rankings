@@ -30,4 +30,4 @@ export default HomePage;
 // display key name
 // also show absorption for trail?
 // add classnames library
-// show weight? subbar? incorporate weight into sorting?
+// show weight? sub bar? or energy bar, weight bar, overall bar?

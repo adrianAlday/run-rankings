@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import LastUpdated from "../_components/LastUpdated";
 
-type Shoe = { name: string; updated_at: string; url: string } & {
+type Shoe = { name: string; type: string; updated_at: string; url: string } & {
   [key: string]: number;
 };
 
@@ -23,26 +23,27 @@ const ShoesPage = async () => {
     console.log(error);
   }
 
-  const valueKey = "cold_energy_returned_fore";
+  const energyKey = "cold_energy_returned_fore";
 
-  const filteredData = data.filter(
-    (shoe) => shoe[valueKey] && shoe.weight && shoe.price,
-  );
+  const processedData = data
+    .filter((shoe) => shoe[energyKey] && shoe.weight && shoe.price)
+    .map((shoe) => ({
+      ...shoe,
+      score: shoe[energyKey] - shoe.weight / 10,
+    })) as unknown as Shoe[];
 
-  const values = filteredData.map((shoe) => shoe[valueKey]);
+  const values = processedData.map((shoe) => shoe.score);
   const maximumValue = Math.max(...values);
   const minimumValue = Math.min(...values);
-  const lastUpdated = filteredData
+
+  const lastUpdated = processedData
     .map((shoe) => shoe.updated_at)
     .sort()
     .at(-1) as string;
 
-  const minimumWidth = 5;
-
-  const dataByType = filteredData
+  const dataByType = processedData
     ?.sort(
-      (a, b) =>
-        (b[valueKey] || 0) - (a[valueKey] || 0) || a.name.localeCompare(b.name),
+      (a, b) => (b.score || 0) - (a.score || 0) || a.name.localeCompare(b.name),
     )
     .reduce(
       (accumulator, shoe) => {
@@ -53,10 +54,12 @@ const ShoesPage = async () => {
       {} as { [key: string]: Shoe[] },
     );
 
+  const minimumWidth = 10;
+
   const valueColors: ValueColors = [
-    [50, [239, 130, 119]], // red
-    [75, [249, 215, 73]], // yellow
-    [100, [73, 159, 248]], // blue
+    [25, [239, 130, 119]], // red
+    [50, [249, 215, 73]], // yellow
+    [75, [73, 159, 248]], // blue
   ];
 
   const getValueRgb = (value: number, valueColors: ValueColors) => {
@@ -94,15 +97,18 @@ const ShoesPage = async () => {
             <div className="my-1">
               Calculation of the energy <span className="italic">absorbed</span>{" "}
               then <span className="italic">returned</span> in{" "}
-              <span className="italic">cold</span> conditions
+              <span className="italic">cold</span> conditions with a{" "}
+              <span className="italic">weight</span> penalty
             </div>
 
-            <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] font-mono">
-              <div>shock_absorption_forefoot *</div>
+            <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] text-[11px] font-mono">
+              <div>energy_absorbed_forefoot</div>
 
-              <div>energy_return_forefoot *</div>
+              <div>* energy_return_rate_forefoot</div>
 
-              <div>100 / ( 100 + hardness_increase_in_cold )</div>
+              <div>* 100 / ( 100 + hardness_increase_in_cold )</div>
+
+              <div>- weight / 10</div>
             </div>
           </div>
 
@@ -141,7 +147,8 @@ const ShoesPage = async () => {
             </div>
 
             {shoes.map((shoe) => {
-              const value = shoe[valueKey];
+              const value = shoe.score;
+
               const width = value
                 ? (100 * (value - minimumValue + minimumWidth)) /
                   (maximumValue - minimumValue + minimumWidth)
@@ -151,7 +158,7 @@ const ShoesPage = async () => {
 
               const isNotParetoEfficient = shoes.some(
                 (otherShoe) =>
-                  otherShoe[valueKey] > shoe[valueKey] &&
+                  otherShoe[energyKey] > shoe[energyKey] &&
                   otherShoe.weight < shoe.weight &&
                   otherShoe.price < shoe.price,
               );
@@ -171,7 +178,7 @@ const ShoesPage = async () => {
                         backgroundColor: `rgb(${backgroundColor.join(",")})`,
                       }}
                     >
-                      {Math.round(shoe[valueKey]) || "-"}
+                      {Math.round(shoe.score)}
                     </div>
                   </Link>
                 </div>
