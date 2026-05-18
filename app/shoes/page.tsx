@@ -97,8 +97,8 @@ const ShoesPage = async () => {
             <div className="my-1">
               Calculation of the energy <span className="italic">absorbed</span>{" "}
               then <span className="italic">returned</span> in{" "}
-              <span className="italic">cold</span> conditions with a{" "}
-              <span className="italic">weight</span> penalty
+              <span className="italic">cold</span> conditions with a penalty for{" "}
+              <span className="italic">weight</span>
             </div>
 
             <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] text-[11px] font-mono">
