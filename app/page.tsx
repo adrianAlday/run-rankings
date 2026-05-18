@@ -30,3 +30,4 @@ export default HomePage;
 // also show absorption for trail?
 // add classnames library
 // show weight? sub bar? or energy bar, weight bar, overall bar?
+// how long are db fetches cached?

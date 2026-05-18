@@ -35,7 +35,7 @@ const ShoesPage = async () => {
     .map((shoe) => ({
       ...shoe,
       price: shoe.deal_price || shoe.retail_price,
-      score: shoe[energyKey] - shoe.weight / 10,
+      score: shoe[energyKey] - shoe.weight * 0.1,
     })) as unknown as Shoe[];
 
   const values = processedData.map((shoe) => shoe.score);
@@ -114,7 +114,7 @@ const ShoesPage = async () => {
 
               <div>* 100 / ( 100 + hardness_increase_in_cold )</div>
 
-              <div>- weight / 10</div>
+              <div>- weight * 0.10</div>
             </div>
           </div>
 
