@@ -25,6 +25,8 @@ const ShoesPage = async () => {
 
   const energyKey = "cold_energy_returned_fore";
 
+  const weightPenalty = 0.15;
+
   const processedData = data
     .filter(
       (shoe) =>
@@ -35,7 +37,7 @@ const ShoesPage = async () => {
     .map((shoe) => ({
       ...shoe,
       price: shoe.deal_price || shoe.retail_price,
-      score: shoe[energyKey] - shoe.weight * 0.1,
+      score: shoe[energyKey] - shoe.weight * weightPenalty,
     })) as unknown as Shoe[];
 
   const values = processedData.map((shoe) => shoe.score);
@@ -114,7 +116,7 @@ const ShoesPage = async () => {
 
               <div>* 100 / ( 100 + hardness_increase_in_cold )</div>
 
-              <div>- weight * 0.10</div>
+              <div>- weight * {weightPenalty.toFixed(2)}</div>
             </div>
           </div>
 
