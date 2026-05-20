@@ -184,7 +184,7 @@ export const GET = async (request: Request) => {
   );
 
   const supabase = await createClient();
-  const insertResponse = await supabase.from("shoes").upsert(
+  const upsertResponse = await supabase.from("shoes").upsert(
     values.map((value) => {
       const {
         slug: runrepeat_slug,
@@ -226,7 +226,7 @@ export const GET = async (request: Request) => {
   );
 
   if (isDev) {
-    console.log(insertResponse);
+    console.log(upsertResponse);
   }
 
   return NextResponse.json({});
