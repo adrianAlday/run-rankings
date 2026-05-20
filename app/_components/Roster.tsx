@@ -42,7 +42,9 @@ const Roster = ({ data }: RosterProps) => {
             DateTime.fromISO(`${year}-12-31`).endOf("day") as DateTime<true>,
           );
         }}
-        className="shrink-0 px-1"
+        className={
+          "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
+        }
       >
         {year}
       </div>,
@@ -82,38 +84,52 @@ const Roster = ({ data }: RosterProps) => {
     [values.at(-2) || 0, [73, 159, 248]], // blue
   ];
 
+  const labsRosterUrl = "https://labs.strava.com/roster/";
+
   return (
     <div>
-      <div>
-        Funnest friends based on how much time we log on Strava together
-      </div>
-
-      <div>
-        Inspired by the Strava Labs Roster https://labs.strava.com/roster/
-      </div>
-
-      <div className="flex overflow-x-scroll no-scrollbar">
-        <div
-          onClick={() => {
-            setStartDate(ninetyDayAgo);
-            setEndDate(today);
-          }}
-          className="shrink-0 px-1"
-        >
-          90 days
+      <div className="my-8 text-xs">
+        <div className="my-4">
+          Funnest friends ...based on how much time we log on Strava together
         </div>
 
-        <div
-          onClick={() => {
-            setStartDate(earliestActivity.startOf("day"));
-            setEndDate(latestActivity.endOf("day"));
-          }}
-          className="shrink-0 px-1"
-        >
-          All-time
+        <div className="my-4">
+          <Link target="_blank" href={labsRosterUrl}>
+            <div>
+              <div className="my-1">Inspired by the Strava Labs Roster</div>
+
+              <div className="my-1 underline">{labsRosterUrl}</div>
+            </div>
+          </Link>
         </div>
 
-        {yearButtons.reverse()}
+        <div className="my-8 flex overflow-x-scroll no-scrollbar">
+          <div
+            onClick={() => {
+              setStartDate(ninetyDayAgo);
+              setEndDate(today);
+            }}
+            className={
+              "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
+            }
+          >
+            90 days
+          </div>
+
+          <div
+            onClick={() => {
+              setStartDate(earliestActivity.startOf("day"));
+              setEndDate(latestActivity.endOf("day"));
+            }}
+            className={
+              "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
+            }
+          >
+            All-time
+          </div>
+
+          {yearButtons.reverse()}
+        </div>
       </div>
 
       {friends.map((friend, index) => {
