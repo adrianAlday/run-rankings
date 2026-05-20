@@ -143,7 +143,7 @@ const Roster = ({ data }: RosterProps) => {
         const backgroundColor = getValueRgb(value, valueColors);
 
         return (
-          <div key={friend.id} className={"my-4"}>
+          <div key={index} className={"my-4"}>
             <Link
               target="_blank"
               href={`https://www.strava.com/athletes/${friend.id}`}
@@ -153,7 +153,7 @@ const Roster = ({ data }: RosterProps) => {
               </div>
 
               <div
-                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)]`}
+                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700`}
                 style={{
                   width: `calc(${minimumWidth}px + ${width}%)`,
                   backgroundColor: `rgb(${backgroundColor.join(",")})`,
