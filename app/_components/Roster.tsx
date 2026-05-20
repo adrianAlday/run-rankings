@@ -85,17 +85,18 @@ const Roster = ({ data }: RosterProps) => {
     [values.at(-2) || 0, [73, 159, 248]], // blue
   ];
 
-  const labsRosterUrl = "https://labs.strava.com/roster/";
-
   return (
     <div>
       <div className="my-8 text-xs">
         <div className="my-4">
-          Funnest friends ...based on time together on Strava
+          <Link target="_blank" href={"https://www.strava.com/athletes/145082"}>
+            Funnest friends ...based on time together on{" "}
+            <span className="underline">Strava</span>
+          </Link>
         </div>
 
         <div className="my-4">
-          <Link target="_blank" href={labsRosterUrl}>
+          <Link target="_blank" href={"https://labs.strava.com/roster/"}>
             <div className="my-1">
               Inspired by <span className="underline">The Roster</span> from
               Strava Labs
