@@ -91,7 +91,7 @@ const Roster = ({ data }: RosterProps) => {
     <div>
       <div className="my-8 text-xs">
         <div className="my-4">
-          Funnest friends ...based on how much time we log on Strava together
+          Funnest friends ...based on time together on Strava
         </div>
 
         <div className="my-4">
