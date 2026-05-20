@@ -1,6 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
 import { isDev } from "@/utils/isDev";
-import Refetch from "../_components/Refetch";
 import Link from "next/link";
 import { Metadata } from "next";
 import LastUpdated from "../_components/LastUpdated";
@@ -235,8 +234,6 @@ const ShoesPage = async () => {
             </div>
           );
         })}
-
-        {isDev && <Refetch />}
       </main>
     </div>
   );

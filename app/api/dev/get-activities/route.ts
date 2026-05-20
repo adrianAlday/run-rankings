@@ -3,7 +3,7 @@ import axios from "axios";
 import { isDev } from "@/utils/isDev";
 import { createClient } from "@/utils/supabase/server";
 
-const getActivities = async (
+const getApiActivities = async (
   accessToken: string,
   beforeEpoch: number,
   page: number,
@@ -39,7 +39,7 @@ const getActivities = async (
 
       await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
-      return await getActivities(accessToken, beforeEpoch, page);
+      return await getApiActivities(accessToken, beforeEpoch, page);
     });
 };
 
@@ -85,7 +85,7 @@ export const GET = async (request: NextRequest) => {
   const supabase = await createClient();
 
   for (let activitiesPage = 1; ; activitiesPage++) {
-    const activitiesResponse = await getActivities(
+    const activitiesResponse = await getApiActivities(
       refreshTokenResponse.access_token,
       refreshTokenResponse.expires_at,
       activitiesPage,
@@ -99,6 +99,7 @@ export const GET = async (request: NextRequest) => {
           id,
           start_date,
           moving_time,
+          pending: true,
         })),
       );
 

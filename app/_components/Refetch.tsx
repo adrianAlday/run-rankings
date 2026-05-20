@@ -3,13 +3,16 @@
 import { isDev } from "@/utils/isDev";
 import axios from "axios";
 
-const Refetch = () => {
+type RefetchProps = { url: string };
+
+const Refetch = ({ url }: RefetchProps) => {
   const refetch = async () => {
     const response = await axios
-      .get("/api/shoes/refetch", {
-        headers: { Authorization: `Bearer ${process.env.VERCEL_CRON_SECRET!}` },
-      })
-      .then((response) => response);
+      .get(url)
+      .then((response) => response)
+      .catch(async (error) => {
+        console.log(error);
+      });
 
     if (isDev) {
       console.log("response", response);
@@ -17,9 +20,11 @@ const Refetch = () => {
   };
 
   return (
-    <button onClick={refetch} className="cursor-pointer">
-      <div className="my-8 text-[rgb(147,148,149)]">⚠️ Refetch</div>
-    </button>
+    isDev && (
+      <button onClick={refetch} className="cursor-pointer">
+        <div>refetch</div>
+      </button>
+    )
   );
 };
 

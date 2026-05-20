@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import Refetch from "../_components/Refetch";
 
 export const metadata: Metadata = {
   title: "Dev",
@@ -19,6 +20,10 @@ const DevPage = async () => {
 
   return (
     <div>
+      <div>Shoes</div>
+
+      <Refetch url={"/api/shoes/refetch"} />
+
       <div>Friends</div>
 
       <Link
@@ -35,9 +40,11 @@ const DevPage = async () => {
         <div>get activities</div>
       </Link>
 
-      <Link target="_blank" href={`http://${host}/api/dev/get-groupings`}>
+      <Link target="_blank" href={"/api/friends/get-groupings"}>
         <div>get groupings</div>
       </Link>
+
+      <Refetch url={"/api/friends/refetch"} />
     </div>
   );
 };
