@@ -5,6 +5,7 @@ import { FriendResponse } from "../friends/page";
 import { useState } from "react";
 import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/utils/colors";
+import LastUpdated from "./LastUpdated";
 
 type RosterProps = {
   data: FriendResponse[];
@@ -101,6 +102,10 @@ const Roster = ({ data }: RosterProps) => {
               <div className="my-1 underline">{labsRosterUrl}</div>
             </div>
           </Link>
+        </div>
+
+        <div className="my-4">
+          <LastUpdated dateTime={latestActivity} />
         </div>
 
         <div className="my-8 flex overflow-x-scroll no-scrollbar">

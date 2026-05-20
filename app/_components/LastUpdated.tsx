@@ -3,10 +3,12 @@
 import { DateTime } from "luxon";
 import Link from "next/link";
 
-type LastUpdatedProps = { lastUpdated: string };
+type LastUpdatedProps = { iso?: string; dateTime?: DateTime<true> };
 
-const LastUpdated = ({ lastUpdated }: LastUpdatedProps) => {
-  const [updatedDayOfWeek, updatedLocalTime] = DateTime.fromISO(lastUpdated)
+const LastUpdated = ({ dateTime, iso }: LastUpdatedProps) => {
+  const [updatedDayOfWeek, updatedLocalTime] = (
+    dateTime || DateTime.fromISO(iso as string)
+  )
     .setZone("system")
     .toFormat("EEEE,t")
     .split(",");
