@@ -85,6 +85,17 @@ const Roster = ({ data }: RosterProps) => {
     [values.at(-2) || 0, [73, 159, 248]], // blue
   ];
 
+  const friendSeconds = data.reduce(
+    (accumulator, friend) =>
+      accumulator +
+      friend.groupings.reduce(
+        (friendAccumulator, grouping) =>
+          friendAccumulator + grouping.activities.moving_time,
+        0,
+      ),
+    0,
+  );
+
   return (
     <div>
       <div className="my-8 text-xs">
@@ -102,6 +113,12 @@ const Roster = ({ data }: RosterProps) => {
               Strava Labs
             </div>
           </Link>
+        </div>
+
+        <div className="my-4">
+          {data.length.toLocaleString("en-US")} unique friends,{" "}
+          {Math.floor(friendSeconds / 60 / 60).toLocaleString("en-US")}{" "}
+          friend-hours and counting
         </div>
 
         <div className="my-4">
@@ -164,7 +181,7 @@ const Roster = ({ data }: RosterProps) => {
                   backgroundColor: `rgb(${backgroundColor.join(",")})`,
                 }}
               >
-                {Math.round(friend.time / 60 / 60)}
+                {Math.floor(friend.time / 60 / 60)}
                 {index === 0 ? " hours" : ""}
               </div>
             </Link>

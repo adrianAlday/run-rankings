@@ -6,7 +6,6 @@ import LastUpdated from "../_components/LastUpdated";
 import ScrollToButton from "../_components/ScrollToButton";
 import { getValueRgb, ValueColors } from "@/utils/colors";
 import { redirect } from "next/navigation";
-import { DateTime } from "luxon";
 
 type Shoe = { name: string; type: string; updated_at: string; url: string } & {
   [key: string]: number;
@@ -202,7 +201,7 @@ const ShoesPage = async () => {
                           backgroundColor: `rgb(${backgroundColor.join(",")})`,
                         }}
                       >
-                        {Math.round(shoe.score)}
+                        {Math.floor(shoe.score)}
                       </div>
                     </Link>
                   </div>
