@@ -153,7 +153,7 @@ const Roster = ({ data }: RosterProps) => {
               </div>
 
               <div
-                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700`}
+                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
                 style={{
                   width: `calc(${minimumWidth}px + ${width}%)`,
                   backgroundColor: `rgb(${backgroundColor.join(",")})`,
