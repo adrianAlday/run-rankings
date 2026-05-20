@@ -76,11 +76,10 @@ const Roster = ({ data }: RosterProps) => {
   const maximumValue = Math.max(...values);
   const maxWidth = 320;
   const minimumWidth = 24;
-  const displayCount = friends.length;
   const valueColors: ValueColors = [
-    [values.at(Math.round((displayCount / 6) * 3)) as number, [249, 215, 73]], // yellow
-    [values.at(Math.round((displayCount / 6) * 4)) as number, [152, 228, 145]], // green
-    [values.at(Math.round((displayCount / 6) * 5)) as number, [73, 159, 248]], // blue
+    [values.at(-8) || 0, [249, 215, 73]], // yellow
+    [values.at(-4) || 0, [152, 228, 145]], // green
+    [values.at(-2) || 0, [73, 159, 248]], // blue
   ];
 
   return (
