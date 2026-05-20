@@ -1,4 +1,4 @@
-rank the bounciest shoes
+rank the bounciest shoes and funnest friends
 
 https://runrankings.vercel.app
 

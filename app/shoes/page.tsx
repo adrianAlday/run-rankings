@@ -4,12 +4,12 @@ import Link from "next/link";
 import { Metadata } from "next";
 import LastUpdated from "../_components/LastUpdated";
 import ScrollToButton from "../_components/ScrollToButton";
+import { getValueRgb, ValueColors } from "@/utils/colors";
+import { redirect } from "next/navigation";
 
 type Shoe = { name: string; type: string; updated_at: string; url: string } & {
   [key: string]: number;
 };
-
-type ValueColors = [number, number[]][];
 
 export const metadata: Metadata = {
   title: "Shoes - Run Rankings",
@@ -21,6 +21,7 @@ const ShoesPage = async () => {
   const { data, error } = response as { data: Shoe[]; error: null };
   if (error) {
     console.log(error);
+    redirect("/");
   }
 
   const energyKey = "cold_energy_returned_fore";
@@ -87,31 +88,6 @@ const ShoesPage = async () => {
     [50, [249, 215, 73]], // yellow
     [75, [73, 159, 248]], // blue
   ];
-
-  const getValueRgb = (value: number, valueColors: ValueColors) => {
-    const firstCriteria = valueColors[0];
-    if (value <= firstCriteria[0]) {
-      return firstCriteria[1];
-    }
-
-    const lastCriteria = valueColors[valueColors.length - 1];
-    if (value >= lastCriteria[0]) {
-      return lastCriteria[1];
-    }
-
-    const higherIndex = valueColors.findIndex(
-      (criteria) => value <= criteria[0],
-    );
-    const higherCriteria = valueColors[higherIndex];
-    const lowerCriteria = valueColors[higherIndex - 1];
-    const split =
-      (value - lowerCriteria[0]) / (higherCriteria[0] - lowerCriteria[0]);
-
-    return lowerCriteria[1].map(
-      (lowerColor, index) =>
-        lowerColor + (higherCriteria[1][index] - lowerColor) * split,
-    );
-  };
 
   return (
     <div>
