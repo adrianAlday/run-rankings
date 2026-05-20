@@ -147,7 +147,7 @@ const Roster = ({ data }: RosterProps) => {
               "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
             }
           >
-            All-time
+            Goat
           </div>
 
           {yearButtons.reverse()}
