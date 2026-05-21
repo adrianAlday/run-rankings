@@ -113,7 +113,7 @@ const Shoes = ({ data }: ShoesProps) => {
         <div className="my-8 text-xs">
           <div className="my-4">
             <div className="my-1">
-              Relative calculation of the energy{" "}
+              Relative rating of the energy{" "}
               <span className="italic">absorbed</span> then{" "}
               <span className="italic">returned</span> in{" "}
               <span className="italic">cold</span> conditions with a penalty for{" "}
