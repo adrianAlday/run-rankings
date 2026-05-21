@@ -100,13 +100,14 @@ export const GET = async (request: Request) => {
     const { products } = categoryData;
 
     for (const product of products) {
-      const { min_price, msrp, name, slug, weight } = product;
+      const { min_price, msrp, name, product_id, slug, weight } = product;
 
       shoeData[name] = {
         ...shoeData[name],
         min_price,
         msrp,
         name,
+        product_id,
         slug,
         weight,
       };
@@ -187,9 +188,9 @@ export const GET = async (request: Request) => {
   const upsertResponse = await supabase.from("shoes").upsert(
     values.map((value) => {
       const {
-        slug: runrepeat_slug,
-        msrp: retail_price,
         min_price: deal_price,
+        msrp: retail_price,
+        product_id: id,
         "Shock absorption forefoot": shock_absorbed_fore,
         "Shock absorption heel": shock_absorbed_heel,
         "Energy return forefoot": energy_return_rate_fore,
@@ -197,17 +198,17 @@ export const GET = async (request: Request) => {
         "Energy returned forefoot": energy_returned_fore,
         "Energy returned heel": energy_returned_heel,
         "Midsole softness in cold (%)": cold_hardness_increase,
-        "Cold energy returned forefoot": cold_energy_returned_fore,
-        "Cold energy returned heel": cold_energy_returned_heel,
         "Cold shock absorption forefoot": cold_shock_absorbed_fore,
         "Cold shock absorption heel": cold_shock_absorbed_heel,
+        "Cold energy returned forefoot": cold_energy_returned_fore,
+        "Cold energy returned heel": cold_energy_returned_heel,
         ...rest
       } = value;
 
       return {
-        runrepeat_slug,
-        retail_price,
         deal_price,
+        retail_price,
+        id,
         shock_absorbed_fore,
         shock_absorbed_heel,
         energy_return_rate_fore,
@@ -222,7 +223,7 @@ export const GET = async (request: Request) => {
         ...rest,
       };
     }),
-    { onConflict: "name" },
+    { onConflict: "id" },
   );
 
   if (isDev) {
