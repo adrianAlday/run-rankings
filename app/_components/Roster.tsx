@@ -13,10 +13,6 @@ type RosterProps = {
 
 const Roster = ({ data }: RosterProps) => {
   const today = DateTime.now().endOf("day");
-  const ninetyDayAgo = today.plus({ days: -90 }).startOf("day");
-
-  const [startDate, setStartDate] = useState(ninetyDayAgo);
-  const [endDate, setEndDate] = useState(today);
 
   const dates = data.flatMap((friend) =>
     friend.groupings.map((grouping) =>
@@ -26,31 +22,30 @@ const Roster = ({ data }: RosterProps) => {
   const earliestActivity = DateTime.min(...dates) as DateTime<true>;
   const latestActivity = DateTime.max(...dates) as DateTime<true>;
 
-  const yearButtons = [];
-  for (
-    let year = earliestActivity?.year;
-    year < latestActivity?.year + 1;
-    year++
-  ) {
-    yearButtons.push(
-      <div
-        key={year}
-        onClick={() => {
-          setStartDate(
-            DateTime.fromISO(`${year}-01-01`).startOf("day") as DateTime<true>,
-          );
-          setEndDate(
-            DateTime.fromISO(`${year}-12-31`).endOf("day") as DateTime<true>,
-          );
-        }}
-        className={
-          "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
-        }
-      >
-        {year}
-      </div>,
-    );
-  }
+  const yearsArray = Array.from(
+    { length: latestActivity.year - earliestActivity.year + 1 },
+    (_undefined, index) => latestActivity.year - index,
+  );
+  const rangeOptions = [
+    ["90 days", [today.plus({ days: -90 }).startOf("day"), today]],
+    ["Goat", [earliestActivity.startOf("day"), latestActivity.endOf("day")]],
+    ...yearsArray.map((year) => [
+      `${year}`,
+      [
+        DateTime.fromISO(`${year}-01-01`).startOf("day"),
+        DateTime.fromISO(`${year}-12-31`).endOf("day"),
+      ],
+    ]),
+  ];
+  const rangeLabels = rangeOptions.map(
+    (rangeOption) => rangeOption[0],
+  ) as string[];
+
+  const [range, setRange] = useState("90 days");
+
+  const [startDate, endDate] = rangeOptions.find(
+    (rangeOption) => rangeOption[0] === range,
+  )?.[1] as DateTime<true>[];
 
   const idDenylist = (process.env.NEXT_PUBLIC_STRAVA_ID_DENYLIST || "")
     .split(", ")
@@ -166,43 +161,17 @@ const Roster = ({ data }: RosterProps) => {
         </div>
 
         <div className="my-8 flex overflow-x-scroll no-scrollbar">
-          <div
-            onClick={() => {
-              setStartDate(ninetyDayAgo);
-              setEndDate(today);
-            }}
-            className={
-              "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
-            }
-          >
-            90 days
-          </div>
-
-          {/* <div
-            onClick={() => {
-              setStartDate(today.plus({ years: -1 }).startOf("day"));
-              setEndDate(today);
-            }}
-            className={
-              "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
-            }
-          >
-            12 months
-          </div> */}
-
-          <div
-            onClick={() => {
-              setStartDate(earliestActivity.startOf("day"));
-              setEndDate(latestActivity.endOf("day"));
-            }}
-            className={
-              "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
-            }
-          >
-            Goat
-          </div>
-
-          {yearButtons.reverse()}
+          {rangeLabels.map((rangeLabel) => (
+            <div
+              key={rangeLabel}
+              onClick={() => {
+                setRange(rangeLabel);
+              }}
+              className={`${range === rangeLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+            >
+              {rangeLabel}
+            </div>
+          ))}
         </div>
       </div>
 
