@@ -55,7 +55,7 @@ const Roster = ({ data }: RosterProps) => {
     (rangeOption) => rangeOption[0],
   ) as string[];
 
-  const [range, setRange] = useState("90 days");
+  const [range, setRange] = useState(rangeLabels[0]);
 
   const [startDate, endDate] = rangeOptions.find(
     (rangeOption) => rangeOption[0] === range,
