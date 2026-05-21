@@ -12,22 +12,22 @@ type RosterProps = {
 };
 
 const Roster = ({ data }: RosterProps) => {
-  const today = DateTime.now().endOf("day");
+  const now = DateTime.now();
 
   const dates = data.flatMap((friend) =>
     friend.groupings.map((grouping) =>
       DateTime.fromISO(grouping.activities.start_date),
     ),
   );
-  const earliestActivity = DateTime.min(...dates) as DateTime<true>;
-  const latestActivity = DateTime.max(...dates) as DateTime<true>;
+  const earliestActivity = DateTime.min(...dates) || now;
+  const latestActivity = DateTime.max(...dates) || now;
 
   const yearsArray = Array.from(
     { length: latestActivity.year - earliestActivity.year + 1 },
     (_undefined, index) => latestActivity.year - index,
   );
   const rangeOptions = [
-    ["90 days", [today.plus({ days: -90 }).startOf("day"), today]],
+    ["90 days", [now.plus({ days: -90 }).startOf("day"), now.endOf("day")]],
     ["Goat", [earliestActivity.startOf("day"), latestActivity.endOf("day")]],
     ...yearsArray.map((year) => [
       `${year}`,
@@ -115,7 +115,7 @@ const Roster = ({ data }: RosterProps) => {
   }));
   const latestFirstActivity = firstActivityData.sort((a, b) =>
     b.firstActivity.start_date.localeCompare(a.firstActivity.start_date),
-  )[0].firstActivity;
+  )[0]?.firstActivity;
   const newestFriends = firstActivityData
     .filter(
       (friend) =>
@@ -148,31 +148,35 @@ const Roster = ({ data }: RosterProps) => {
           friend-hours and counting
         </div>
 
-        <div className="my-4">
-          Newest:{" "}
-          {newestFriends.map((friend, index) => (
+        {latestFirstActivity && (
+          <div className="my-4">
+            Newest:{" "}
+            {newestFriends.map((friend, index) => (
+              <Link
+                key={friend.id}
+                target="_blank"
+                href={`https://www.strava.com/athletes/${friend.id}`}
+              >
+                {index ? ", " : ""}
+                <span className={"underline"}>{friend.name}</span>
+              </Link>
+            ))}{" "}
+            on{" "}
             <Link
-              key={friend.id}
               target="_blank"
-              href={`https://www.strava.com/athletes/${friend.id}`}
+              href={`https://www.strava.com/activities/${latestFirstActivity.id}`}
             >
-              {index ? ", " : ""}
-              <span className={"underline"}>{friend.name}</span>
+              <span className="underline">
+                {DateTime.fromISO(latestFirstActivity.start_date).toFormat(
+                  "M/d",
+                )}
+              </span>
             </Link>
-          ))}{" "}
-          on{" "}
-          <Link
-            target="_blank"
-            href={`https://www.strava.com/activities/${latestFirstActivity.id}`}
-          >
-            <span className="underline">
-              {DateTime.fromISO(latestFirstActivity.start_date).toFormat("M/d")}
-            </span>
-          </Link>
-        </div>
+          </div>
+        )}
 
         <div className="my-4">
-          <LastUpdated dateTime={latestActivity} />
+          <LastUpdated dateTime={latestActivity as DateTime<true>} />
         </div>
 
         <div className="my-8 flex overflow-x-scroll no-scrollbar">
