@@ -89,9 +89,10 @@ const Roster = ({ data }: RosterProps) => {
   const maxWidth = 320;
   const minimumWidth = 24;
   const valueColors: ValueColors = [
-    [0, [73, 159, 248]], // blue
-    [8, [152, 228, 145]], // green
-    [24, [249, 215, 73]], // yellow
+    [0, [204, 120, 209]], // purple
+    [3, [73, 159, 248]], // blue
+    [9, [152, 228, 145]], // green
+    [27, [249, 215, 73]], // yellow
   ];
 
   const friendSeconds = data.reduce(
