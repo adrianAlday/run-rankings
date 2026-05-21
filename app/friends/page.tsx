@@ -1,7 +1,6 @@
 import { createClient } from "@/utils/supabase/client";
 import { Metadata } from "next";
 import Roster from "../_components/Roster";
-import { redirect } from "next/navigation";
 
 export type FriendResponse = {
   id: number;
@@ -28,10 +27,9 @@ const RosterPage = async () => {
   };
   if (error) {
     console.log(error);
-    redirect("/");
   }
 
-  return <Roster data={data} />;
+  return <Roster data={data || []} />;
 };
 
 export default RosterPage;
