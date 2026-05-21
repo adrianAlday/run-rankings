@@ -80,9 +80,9 @@ const Roster = ({ data }: RosterProps) => {
   const maxWidth = 320;
   const minimumWidth = 24;
   const valueColors: ValueColors = [
-    [values.at(-8) || 0, [249, 215, 73]], // yellow
-    [values.at(-4) || 0, [152, 228, 145]], // green
-    [values.at(-2) || 0, [73, 159, 248]], // blue
+    [0, [73, 159, 248]], // blue
+    [8, [152, 228, 145]], // green
+    [24, [249, 215, 73]], // yellow
   ];
 
   const friendSeconds = data.reduce(
@@ -138,6 +138,18 @@ const Roster = ({ data }: RosterProps) => {
             90 days
           </div>
 
+          {/* <div
+            onClick={() => {
+              setStartDate(today.plus({ years: -1 }).startOf("day"));
+              setEndDate(today);
+            }}
+            className={
+              "mr-2 border border-[rgb(42,43,44)] rounded-md bg-[rgb(65,121,157)] py-1 px-2 shrink-0 flex items-center justify-center text-xs text-[rgb(253,254,255)] font-medium"
+            }
+          >
+            12 months
+          </div> */}
+
           <div
             onClick={() => {
               setStartDate(earliestActivity.startOf("day"));
@@ -162,7 +174,7 @@ const Roster = ({ data }: RosterProps) => {
             (((maxWidth - minimumWidth) / maxWidth) * (value - minimumValue))) /
           (maximumValue - minimumValue);
 
-        const backgroundColor = getValueRgb(value, valueColors);
+        const backgroundColor = getValueRgb(index, valueColors);
 
         return (
           <div key={index} className={"my-4"}>
