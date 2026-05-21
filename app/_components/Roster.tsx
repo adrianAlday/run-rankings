@@ -36,6 +36,20 @@ const Roster = ({ data }: RosterProps) => {
         DateTime.fromISO(`${year}-12-31`).endOf("day"),
       ],
     ]),
+    [
+      "Bike era",
+      [
+        DateTime.fromISO(`1920-01-01`).startOf("day"),
+        DateTime.fromISO(`2020-12-31`).endOf("day"),
+      ],
+    ],
+    [
+      "Run era",
+      [
+        DateTime.fromISO(`2021-01-01`).startOf("day"),
+        DateTime.fromISO(`2121-12-31`).endOf("day"),
+      ],
+    ],
   ];
   const rangeLabels = rangeOptions.map(
     (rangeOption) => rangeOption[0],
