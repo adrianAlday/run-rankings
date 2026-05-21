@@ -88,10 +88,19 @@ export const GET = async (request: Request) => {
 
     if (friendsUpsertResponse.success) {
       const groupingsUpsertResponse = await supabase.from("groupings").upsert(
-        group.athletes.map(({ id: friend_id }: { [key: string]: string }) => ({
-          activity_id,
-          friend_id,
-        })),
+        [
+          ...new Map(
+            group.athletes.map(
+              ({ id: friend_id }: { [key: string]: string }) => [
+                friend_id,
+                {
+                  activity_id,
+                  friend_id,
+                },
+              ],
+            ),
+          ).values(),
+        ],
         { onConflict: "activity_id, friend_id" },
       );
       if (isDev) {
