@@ -32,7 +32,7 @@ const DevPage = async () => {
           `http://www.strava.com/oauth/authorize?` +
           `&response_type=code` +
           `&client_id=${process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID}` +
-          `&scope=activity:read` +
+          `&scope=activity:read_all` +
           `&redirect_uri=http://${host}/api/dev/get-activities` +
           `&state=${referer}`
         }
