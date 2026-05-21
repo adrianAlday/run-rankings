@@ -65,7 +65,7 @@ const Roster = ({ data }: RosterProps) => {
     .split(", ")
     .map((string) => Number(string));
   const maxDisplayCount = 50;
-  const friends = data
+  const allFriends = data
     .map(({ id, name, groupings }) => {
       const time = groupings.reduce((accumulator, grouping) => {
         const { start_date, moving_time } = grouping.activities;
@@ -80,8 +80,12 @@ const Roster = ({ data }: RosterProps) => {
       return { id, name, time };
     })
     .sort((a, b) => b.time - a.time || a.name.localeCompare(b.name))
-    .filter(({ time, id }) => time / 60 / 60 > 1 && !idDenylist.includes(id))
+    .filter(({ time }) => time > 0);
+
+  const friends = allFriends
+    .filter(({ id }) => !idDenylist.includes(id))
     .slice(0, maxDisplayCount);
+  const extraFriends = allFriends.length - friends.length;
 
   const values = friends.map((friend) => friend.time).sort();
   const minimumValue = Math.min(...values);
@@ -228,6 +232,12 @@ const Roster = ({ data }: RosterProps) => {
           </div>
         );
       })}
+
+      {!!extraFriends && (
+        <div className="my-4 text-sm font-semibold">
+          and {extraFriends.toLocaleString("en-US")} more
+        </div>
+      )}
     </div>
   );
 };
