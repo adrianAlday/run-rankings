@@ -68,17 +68,20 @@ export const GET = async (request: Request) => {
   for (const { id: activity_id } of selectResponse.data || []) {
     const group = await getGroup(activity_id);
 
-    const friendsUpsertResponse = await supabase.from("friends").upsert([
-      ...new Map(
-        group.athletes.map(({ id, name }: { [key: string]: string }) => [
-          id,
-          {
+    const friendsUpsertResponse = await supabase.from("friends").upsert(
+      [
+        ...new Map(
+          group.athletes.map(({ id, name }: { [key: string]: string }) => [
             id,
-            name,
-          },
-        ]),
-      ).values(),
-    ]);
+            {
+              id,
+              name,
+            },
+          ]),
+        ).values(),
+      ],
+      { onConflict: "id" },
+    );
     if (isDev) {
       console.log(friendsUpsertResponse);
     }
@@ -86,9 +89,10 @@ export const GET = async (request: Request) => {
     if (friendsUpsertResponse.success) {
       const groupingsUpsertResponse = await supabase.from("groupings").upsert(
         group.athletes.map(({ id: friend_id }: { [key: string]: string }) => ({
-          friend_id,
           activity_id,
+          friend_id,
         })),
+        { onConflict: "activity_id, friend_id" },
       );
       if (isDev) {
         console.log(groupingsUpsertResponse);

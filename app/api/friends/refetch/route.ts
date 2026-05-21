@@ -74,6 +74,7 @@ export const GET = async (request: Request) => {
             pending: true,
           }),
         ),
+        { onConflict: "id" },
       );
       if (isDev) {
         console.log(upsertResponse);

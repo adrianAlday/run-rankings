@@ -101,6 +101,7 @@ export const GET = async (request: NextRequest) => {
           moving_time,
           pending: true,
         })),
+        { onConflict: "id" },
       );
 
       if (isDev) {
