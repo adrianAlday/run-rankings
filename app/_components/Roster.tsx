@@ -96,12 +96,29 @@ const Roster = ({ data }: RosterProps) => {
     0,
   );
 
+  const firstActivityData = data.map(({ id, name, groupings }) => ({
+    id,
+    name,
+    firstActivity: groupings
+      .map((grouping) => grouping.activities)
+      .sort((a, b) => a.start_date.localeCompare(b.start_date))[0],
+  }));
+  const latestFirstActivity = firstActivityData.sort((a, b) =>
+    b.firstActivity.start_date.localeCompare(a.firstActivity.start_date),
+  )[0].firstActivity;
+  const newestFriends = firstActivityData
+    .filter(
+      (friend) =>
+        friend.firstActivity.start_date === latestFirstActivity.start_date,
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <div>
       <div className="my-8 text-xs">
         <div className="my-4">
           <Link target="_blank" href={"https://www.strava.com/athletes/145082"}>
-            Funnest friends ...based on time together on{" "}
+            Most fun friends ...based on time together on{" "}
             <span className="underline">Strava</span>
           </Link>
         </div>
@@ -116,9 +133,32 @@ const Roster = ({ data }: RosterProps) => {
         </div>
 
         <div className="my-4">
-          {data.length.toLocaleString("en-US")} unique friends,{" "}
+          {data.length.toLocaleString("en-US")} unique athletes,{" "}
           {Math.floor(friendSeconds / 60 / 60).toLocaleString("en-US")}{" "}
           friend-hours and counting
+        </div>
+
+        <div className="my-4">
+          Newest:{" "}
+          {newestFriends.map((friend, index) => (
+            <Link
+              key={friend.id}
+              target="_blank"
+              href={`https://www.strava.com/athletes/${friend.id}`}
+            >
+              {index ? ", " : ""}
+              <span className={"underline"}>{friend.name}</span>
+            </Link>
+          ))}{" "}
+          on{" "}
+          <Link
+            target="_blank"
+            href={`https://www.strava.com/activities/${latestFirstActivity.id}`}
+          >
+            <span className="underline">
+              {DateTime.fromISO(latestFirstActivity.start_date).toFormat("M/d")}
+            </span>
+          </Link>
         </div>
 
         <div className="my-4">

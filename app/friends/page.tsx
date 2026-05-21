@@ -6,7 +6,12 @@ export type FriendResponse = {
   id: number;
   name: string;
   groupings: {
-    activities: { start_date: string; moving_time: number; updated_at: string };
+    activities: {
+      id: number;
+      start_date: string;
+      moving_time: number;
+      updated_at: string;
+    };
   }[];
 };
 
@@ -19,7 +24,7 @@ const RosterPage = async () => {
   const response = await supabase
     .from("friends")
     .select(
-      "id, name, groupings ( activities ( start_date, moving_time, updated_at ) )",
+      "id, name, groupings ( activities ( id, start_date, moving_time, updated_at ) )",
     );
   const { data, error } = response as unknown as {
     data: FriendResponse[];
