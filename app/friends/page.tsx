@@ -1,6 +1,7 @@
 import { createClient } from "@/app/_utils/supabase/client";
 import { Metadata } from "next";
 import Roster from "../_components/Roster";
+import { Suspense } from "react";
 
 export type FriendResponse = {
   id: number;
@@ -34,7 +35,11 @@ const RosterPage = async () => {
     console.log(error);
   }
 
-  return <Roster data={data || []} />;
+  return (
+    <Suspense>
+      <Roster data={data || []} />
+    </Suspense>
+  );
 };
 
 export default RosterPage;
