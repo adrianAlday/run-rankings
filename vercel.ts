@@ -7,28 +7,33 @@ const everyHourArray = [
 
 const everyFifteenMinuteArray = [0, 15, 30, 45];
 
+const friendsRefetchPath = "/api/shoes/refetch";
 const shoesRefetchPath = "/api/shoes/refetch";
 
+// 1 job
 const generateEveryWeekJobs = (path: string) => [
   {
     path,
-    schedule: "1 4 * * 6",
+    schedule: "1 8 * * 6",
   },
 ];
 
+// 1 job
 const generateEveryDayJobs = (path: string) => [
   {
     path,
-    schedule: "1 4 * * *",
+    schedule: "1 8 * * *",
   },
 ];
 
+// 24 jobs
 const generateEveryHourJobs = (path: string) =>
   everyHourArray.map((value) => ({
     path,
     schedule: `1 ${value} * * *`,
   }));
 
+// 96 jobs
 const generateEvery15MinutesJobs = (path: string) =>
   everyHourArray.flatMap((hour) =>
     everyFifteenMinuteArray.map((minute) => ({
@@ -38,17 +43,18 @@ const generateEvery15MinutesJobs = (path: string) =>
   );
 
 export const config: VercelConfig = {
+  // max 100 jobs
   crons: [
     // friends
-    // {
-    //   path: "/api/friends/refetch",
-    //   schedule: "1 4 * * *",
-    // },
+    // ...generateEveryWeekJobs(friendsRefetchPath),
+    // ...generateEveryDayJobs(friendsRefetchPath),
+    // ...generateEveryHourJobs(friendsRefetchPath),
+    ...generateEvery15MinutesJobs(friendsRefetchPath),
 
     // shoes
-    // ...generateEveryWeekJobs(shoesRefetchPath),
+    ...generateEveryWeekJobs(shoesRefetchPath), // default
     // ...generateEveryDayJobs(shoesRefetchPath),
     // ...generateEveryHourJobs(shoesRefetchPath),
-    ...generateEvery15MinutesJobs(shoesRefetchPath),
+    // ...generateEvery15MinutesJobs(shoesRefetchPath),
   ],
 };
