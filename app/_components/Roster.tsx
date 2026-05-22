@@ -278,7 +278,7 @@ const Roster = ({ data }: RosterProps) => {
 
       {!!extraFriends && (
         <div className="my-4 text-sm font-semibold">
-          and {extraFriends.toLocaleString("en-US")} more
+          and {extraFriends.toLocaleString("en-US")} more...
         </div>
       )}
 
