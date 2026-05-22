@@ -16,11 +16,13 @@ const LastUpdated = ({ dateTime, iso }: LastUpdatedProps) => {
   return (
     <Link
       target="_blank"
-      href={"https://github.com/adrianAlday/run-rankings/blob/main/vercel.json"}
+      href={"https://github.com/adrianAlday/run-rankings/blob/main/vercel.ts"}
     >
       <div>
-        Updated {updatedDayOfWeek},{" "}
-        <span className="underline">{updatedLocalTime}</span>
+        Auto updated{" "}
+        <span className="underline">
+          {updatedDayOfWeek} {updatedLocalTime}
+        </span>
       </div>
     </Link>
   );
