@@ -66,11 +66,21 @@ const Roster = ({ data }: RosterProps) => {
   );
 
   useEffect(() => {
-    document.getElementById(range)?.scrollIntoView({
+    document.getElementById(rangeLabels.at(-1) as string)?.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
       inline: "start",
     });
+
+    const timer = setTimeout(() => {
+      document.getElementById(range)?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
+    }, 700);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const [startDate, endDate] = rangeOptions.find(
