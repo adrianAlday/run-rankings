@@ -58,6 +58,8 @@ const Roster = ({ data }: RosterProps) => {
     (rangeOption) => rangeOption[0],
   ) as string[];
 
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const rangeParam = searchParams.get("range");
@@ -69,6 +71,15 @@ const Roster = ({ data }: RosterProps) => {
   );
 
   const idParam = searchParams.get("id");
+
+  const changeRangeParam = (value: string) => {
+    router.replace(
+      `${pathname}?${idParam ? `id=${idParam}&` : ""}range=${encodeParam(value)}`,
+      {
+        scroll: false,
+      },
+    );
+  };
 
   useEffect(() => {
     document.getElementById(rangeLabels.at(-1) as string)?.scrollIntoView({
@@ -83,6 +94,10 @@ const Roster = ({ data }: RosterProps) => {
         block: "nearest",
         inline: "start",
       });
+
+      if (!rangeParam) {
+        changeRangeParam(range);
+      }
     }, 700);
 
     return () => clearTimeout(timer);
@@ -158,9 +173,6 @@ const Roster = ({ data }: RosterProps) => {
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  const router = useRouter();
-  const pathname = usePathname();
-
   return (
     <div>
       <div className="my-8 text-xs">
@@ -225,12 +237,7 @@ const Roster = ({ data }: RosterProps) => {
               onClick={() => {
                 setRange(rangeLabel);
 
-                router.replace(
-                  `${pathname}?${idParam ? `id=${idParam}&` : ""}range=${encodeParam(rangeLabel)}`,
-                  {
-                    scroll: false,
-                  },
-                );
+                changeRangeParam(rangeLabel);
               }}
               className={`${range === rangeLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
