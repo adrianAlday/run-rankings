@@ -250,6 +250,8 @@ const Roster = ({ data }: RosterProps) => {
 
         const backgroundColor = getValueRgb(index, valueColors);
 
+        const hours = Math.ceil(friend.time / 60 / 60);
+
         return (
           <div key={index} className={"my-4"}>
             <Link
@@ -268,8 +270,8 @@ const Roster = ({ data }: RosterProps) => {
                   backgroundColor: `rgb(${backgroundColor.join(",")})`,
                 }}
               >
-                {Math.floor(friend.time / 60 / 60)}
-                {index === 0 ? " hours" : ""}
+                {hours}
+                {index === 0 ? ` hour${hours !== 0 ? "s" : ""}` : ""}
               </div>
             </Link>
           </div>
