@@ -1,5 +1,5 @@
-import { isDev } from "@/utils/isDev";
-import { createClient } from "@/utils/supabase/server";
+import { isDev } from "@/app/_utils/isDev";
+import { createClient } from "@/app/_utils/supabase/server";
 import axios from "axios";
 import { NextResponse } from "next/server";
 

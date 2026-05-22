@@ -1,6 +1,6 @@
 "use client";
 
-import { isDev } from "@/utils/isDev";
+import { isDev } from "@/app/_utils/isDev";
 import axios from "axios";
 
 type RefetchProps = { url: string };

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-import { isDev } from "@/utils/isDev";
-import { createClient } from "@/utils/supabase/server";
+import { isDev } from "@/app/_utils/isDev";
+import { createClient } from "@/app/_utils/supabase/server";
 
 const getApiActivities = async (
   accessToken: string,

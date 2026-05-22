@@ -1,11 +1,11 @@
 "use client";
 
-import { getValueRgb, ValueColors } from "@/utils/colors";
+import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import { Shoe } from "../shoes/page";
 import Link from "next/link";
 import LastUpdated from "./LastUpdated";
 import ScrollToButton from "./ScrollToButton";
-import { isDev } from "@/utils/isDev";
+import { isDev } from "@/app/_utils/isDev";
 import { useState } from "react";
 
 type ShoesProps = {

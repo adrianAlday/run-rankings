@@ -1,4 +1,4 @@
-import { isDev } from "@/utils/isDev";
+import { isDev } from "@/app/_utils/isDev";
 import { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";

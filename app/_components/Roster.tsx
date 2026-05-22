@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { FriendResponse } from "../friends/page";
 import { useState } from "react";
 import Link from "next/link";
-import { getValueRgb, ValueColors } from "@/utils/colors";
+import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
 
 type RosterProps = {

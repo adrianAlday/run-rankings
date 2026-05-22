@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/app/_utils/supabase/client";
 import { Metadata } from "next";
 import Roster from "../_components/Roster";
 
