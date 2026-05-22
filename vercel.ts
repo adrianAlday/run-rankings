@@ -47,7 +47,7 @@ export const config: VercelConfig = {
   crons: [
     // friends
     // ...generateEveryWeekJobs(friendsRefetchPath),
-    // ...generateEveryDayJobs(friendsRefetchPath),
+    // ...generateEveryDayJobs(friendsRefetchPath), // default
     // ...generateEveryHourJobs(friendsRefetchPath),
     ...generateEveryFifteenMinutesJobs(friendsRefetchPath),
 

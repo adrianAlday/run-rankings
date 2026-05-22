@@ -201,13 +201,14 @@ const Roster = ({ data }: RosterProps) => {
         {latestFirstActivity && (
           <div className="my-4">
             Newest:{" "}
-            {newestFriends.map((friend, index) => (
+            {newestFriends.map((friend, index, array) => (
               <Link
                 key={friend.id}
                 target="_blank"
                 href={`https://www.strava.com/athletes/${friend.id}`}
               >
                 {index ? ", " : ""}
+                {index === array.length - 1 ? " and " : ""}
                 <span className={"underline"}>{friend.name}</span>
               </Link>
             ))}{" "}
