@@ -35,10 +35,19 @@ const Shoes = ({ data }: ShoesProps) => {
   );
   const priceSteps = 100;
   const topPriceOption = Math.ceil(maximumPrice / priceSteps) * priceSteps;
-  const priceArray = Array.from(
+  const initialPriceArray = Array.from(
     { length: (topPriceOption - priceSteps) / priceSteps + 1 },
     (_undefined, index) => topPriceOption - priceSteps * index,
   );
+  const priceArray = initialPriceArray
+    .map((price) => [
+      price,
+      initialProcessedData.filter((shoe) => shoe.price <= price).length,
+    ])
+    .filter((value, index, array) =>
+      index === 0 ? true : value[1] !== array[index - 1][1],
+    )
+    .map((value) => value[0]);
   const priceLabels = priceArray.map(
     (rangeOption, index) => `${index === 0 ? "Under " : ""}$${rangeOption}`,
   ) as string[];
