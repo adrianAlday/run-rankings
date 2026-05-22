@@ -7,7 +7,7 @@ const everyHourArray = [
 
 const everyFifteenMinuteArray = [0, 15, 30, 45];
 
-const friendsRefetchPath = "/api/shoes/refetch";
+const friendsRefetchPath = "/api/friends/refetch";
 const shoesRefetchPath = "/api/shoes/refetch";
 
 // 1 job
