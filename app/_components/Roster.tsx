@@ -8,6 +8,7 @@ import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
+import BuiltBy from "./BuiltBy";
 
 type RosterProps = {
   data: FriendResponse[];
@@ -271,6 +272,8 @@ const Roster = ({ data }: RosterProps) => {
           and {extraFriends.toLocaleString("en-US")} more
         </div>
       )}
+
+      <BuiltBy />
     </div>
   );
 };

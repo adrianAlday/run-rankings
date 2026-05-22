@@ -7,6 +7,7 @@ import LastUpdated from "./LastUpdated";
 import ScrollToButton from "./ScrollToButton";
 import { isDev } from "@/app/_utils/isDev";
 import { useState } from "react";
+import BuiltBy from "./BuiltBy";
 
 type ShoesProps = {
   data: Shoe[];
@@ -252,6 +253,8 @@ const Shoes = ({ data }: ShoesProps) => {
             </div>
           );
         })}
+
+        <BuiltBy />
       </main>
     </div>
   );
