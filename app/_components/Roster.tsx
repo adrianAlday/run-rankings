@@ -2,10 +2,12 @@
 
 import { DateTime } from "luxon";
 import { FriendResponse } from "../friends/page";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { encodeParam } from "../_utils/url";
 
 type RosterProps = {
   data: FriendResponse[];
@@ -55,7 +57,21 @@ const Roster = ({ data }: RosterProps) => {
     (rangeOption) => rangeOption[0],
   ) as string[];
 
-  const [range, setRange] = useState(rangeLabels[0]);
+  const rangeParam = useSearchParams().get("range");
+
+  const [range, setRange] = useState(
+    rangeLabels.find(
+      (label) => label.toLowerCase() == rangeParam?.toLowerCase(),
+    ) || rangeLabels[0],
+  );
+
+  useEffect(() => {
+    document.getElementById(range)?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+  }, []);
 
   const [startDate, endDate] = rangeOptions.find(
     (rangeOption) => rangeOption[0] === range,
@@ -127,6 +143,9 @@ const Roster = ({ data }: RosterProps) => {
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
     <div>
       <div className="my-8 text-xs">
@@ -187,8 +206,12 @@ const Roster = ({ data }: RosterProps) => {
           {rangeLabels.map((rangeLabel) => (
             <div
               key={rangeLabel}
+              id={rangeLabel}
               onClick={() => {
                 setRange(rangeLabel);
+                router.replace(`${pathname}?range=${encodeParam(rangeLabel)}`, {
+                  scroll: false,
+                });
               }}
               className={`${range === rangeLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
