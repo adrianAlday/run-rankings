@@ -96,7 +96,7 @@ export const GET = async (request: Request) => {
 
   await axios
     .get(`http://${hostHeader}/api/friends/get-groupings`, {
-      headers: { Authorization: `Bearer ${process.env.CRON_SECRET!}` },
+      headers: { Authorization: `Bearer ${cronSecret}` },
     })
     .then((response) => response);
 
