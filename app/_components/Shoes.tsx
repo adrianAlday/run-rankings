@@ -232,7 +232,7 @@ const Shoes = ({ data }: ShoesProps) => {
                   >
                     <Link
                       target="_blank"
-                      href={`https://runrepeat.com/${shoe.runrepeat_slug}`}
+                      href={`https://runrepeat.com/${shoe.slug}`}
                     >
                       <div className="text-sm font-semibold">{shoe.name}</div>
 

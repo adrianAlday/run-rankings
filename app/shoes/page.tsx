@@ -4,6 +4,7 @@ import Shoes from "../_components/Shoes";
 
 export type Shoe = {
   name: string;
+  slug: string;
   type: string;
   updated_at: string;
   url: string;
