@@ -58,13 +58,17 @@ const Roster = ({ data }: RosterProps) => {
     (rangeOption) => rangeOption[0],
   ) as string[];
 
-  const rangeParam = useSearchParams().get("range");
+  const searchParams = useSearchParams();
+
+  const rangeParam = searchParams.get("range");
 
   const [range, setRange] = useState(
     rangeLabels.find(
       (label) => label.toLowerCase() == rangeParam?.toLowerCase(),
     ) || rangeLabels[0],
   );
+
+  const idParam = searchParams.get("id");
 
   useEffect(() => {
     document.getElementById(rangeLabels.at(-1) as string)?.scrollIntoView({
@@ -220,9 +224,13 @@ const Roster = ({ data }: RosterProps) => {
               id={rangeLabel}
               onClick={() => {
                 setRange(rangeLabel);
-                router.replace(`${pathname}?range=${encodeParam(rangeLabel)}`, {
-                  scroll: false,
-                });
+
+                router.replace(
+                  `${pathname}?${idParam ? `id=${idParam}&` : ""}range=${encodeParam(rangeLabel)}`,
+                  {
+                    scroll: false,
+                  },
+                );
               }}
               className={`${range === rangeLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
@@ -250,6 +258,7 @@ const Roster = ({ data }: RosterProps) => {
             >
               <div className="text-sm font-semibold">
                 <span className={"opacity-50"}>{index + 1}</span> {friend.name}
+                {`${friend.id}` === idParam ? " 🎉🎉🎉" : ""}
               </div>
 
               <div
