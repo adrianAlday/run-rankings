@@ -200,7 +200,7 @@ const Roster = ({ data }: RosterProps) => {
         {latestFirstActivity && (
           <div className="my-4">
             Newest:{" "}
-            {newestFriends.map((friend, index, array) => (
+            {newestFriends.map((friend, index) => (
               <Link
                 key={friend.id}
                 target="_blank"
