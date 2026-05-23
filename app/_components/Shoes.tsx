@@ -204,13 +204,6 @@ const Shoes = ({ data }: ShoesProps) => {
               {shoes.map((shoe, shoeIndex) => {
                 const value = shoe.score;
 
-                const width = value
-                  ? (100 * (value - targetMinimumValue + minimumWidth)) /
-                    (tagetMaximumValue - targetMinimumValue + minimumWidth)
-                  : minimumWidth;
-
-                const backgroundColor = getValueRgb(value, valueColors);
-
                 const surpassedBy = shoes.filter(
                   (otherShoe) =>
                     otherShoe[energyKey] > shoe[energyKey] &&
@@ -218,13 +211,13 @@ const Shoes = ({ data }: ShoesProps) => {
                     otherShoe.price < shoe.price,
                 );
                 const isNotParetoEfficient = surpassedBy.length;
-                if (isDev && isNotParetoEfficient) {
-                  console.log(
-                    shoe.name,
-                    "surpassedBy",
-                    surpassedBy.map((shoe) => shoe.name)[0],
-                  );
-                }
+
+                const width = value
+                  ? (100 * (value - targetMinimumValue + minimumWidth)) /
+                    (tagetMaximumValue - targetMinimumValue + minimumWidth)
+                  : minimumWidth;
+
+                const backgroundColor = getValueRgb(value, valueColors);
 
                 return (
                   <div
@@ -236,6 +229,12 @@ const Shoes = ({ data }: ShoesProps) => {
                       href={`https://runrepeat.com/${shoe.slug}`}
                     >
                       <div className="text-sm font-semibold">{shoe.name}</div>
+
+                      {!!isNotParetoEfficient && (
+                        <div className="text-xs">
+                          {"<<"} {surpassedBy[0].name}
+                        </div>
+                      )}
 
                       <div
                         className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
