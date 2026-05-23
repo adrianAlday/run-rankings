@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
 import BuiltBy from "./BuiltBy";
 
@@ -58,7 +58,6 @@ const Roster = ({ data }: RosterProps) => {
     (rangeOption) => rangeOption[0],
   ) as string[];
 
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -73,11 +72,11 @@ const Roster = ({ data }: RosterProps) => {
   const idParam = searchParams.get("id");
 
   const changeRangeParam = (value: string) => {
-    router.replace(
-      `${pathname}?${idParam ? `id=${idParam}&` : ""}range=${encodeParam(value)}`,
-      {
-        scroll: false,
-      },
+    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}range=${encodeParam(value)}`;
+    window.history.replaceState(
+      { ...window.history.state, as: newUrl, url: newUrl },
+      "",
+      newUrl,
     );
   };
 
