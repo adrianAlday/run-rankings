@@ -2,7 +2,7 @@
 
 import { DateTime } from "luxon";
 import { FriendResponse } from "../friends/page";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition, ViewTransition } from "react";
 import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
@@ -172,6 +172,8 @@ const Roster = ({ data }: RosterProps) => {
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 
+  const [, startTransition] = useTransition();
+
   return (
     <div>
       <div className="my-8 text-xs">
@@ -234,7 +236,9 @@ const Roster = ({ data }: RosterProps) => {
               key={rangeLabel}
               id={rangeLabel}
               onClick={() => {
-                setRange(rangeLabel);
+                startTransition(() => {
+                  setRange(rangeLabel);
+                });
 
                 changeRangeParam(rangeLabel);
               }}
@@ -264,10 +268,13 @@ const Roster = ({ data }: RosterProps) => {
               target="_blank"
               href={`https://www.strava.com/athletes/${friend.id}`}
             >
-              <div className="text-sm font-semibold">
-                <span className={"opacity-50"}>{index + 1}</span> {friend.name}
-                {`${friend.id}` === idParam ? " 🎉🎉🎉" : ""}
-              </div>
+              <ViewTransition exit="fade-out" enter="fade-in">
+                <div className="text-sm font-semibold">
+                  <span className={"pr-1.5 opacity-50"}>{index + 1}</span>
+                  {friend.name}
+                  {`${friend.id}` === idParam ? " 🎉🎉🎉" : ""}
+                </div>
+              </ViewTransition>
 
               <div
                 className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}

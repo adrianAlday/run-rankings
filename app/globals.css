@@ -3,6 +3,8 @@
 :root {
   --background: rgb(18, 19, 20);
   --foreground: rgb(189, 190, 191);
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
 }
 
 @theme {
@@ -18,4 +20,22 @@ body {
 
 @utility no-scrollbar {
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
+@keyframes fade {
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+::view-transition-old(.fade-out) {
+  animation: var(--duration-exit) ease-in fade reverse;
+}
+::view-transition-new(.fade-in) {
+  animation: var(--duration-enter) ease-out var(--duration-exit) both fade;
 }
