@@ -208,7 +208,6 @@ const Roster = ({ data }: RosterProps) => {
                 href={`https://www.strava.com/athletes/${friend.id}`}
               >
                 {index ? ", " : ""}
-                {index === array.length - 1 ? " and " : ""}
                 <span className={"underline"}>{friend.name}</span>
               </Link>
             ))}{" "}
