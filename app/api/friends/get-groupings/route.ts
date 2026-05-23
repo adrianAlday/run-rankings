@@ -38,18 +38,7 @@ const getGroup = async (
     });
 };
 
-export const GET = async (request: Request) => {
-  const cronSecret = process.env.CRON_SECRET;
-  const authHeader = request.headers.get("authorization");
-
-  if (!isDev) {
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-      return new Response("Unauthorized", {
-        status: 401,
-      });
-    }
-  }
-
+export const getGroupings = async () => {
   const supabase = await createClient();
 
   const data = {
@@ -125,6 +114,21 @@ export const GET = async (request: Request) => {
       }
     }
   }
+};
+
+export const GET = async (request: Request) => {
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = request.headers.get("authorization");
+
+  if (!isDev) {
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      return new Response("Unauthorized", {
+        status: 401,
+      });
+    }
+  }
+
+  await getGroupings();
 
   return NextResponse.json({});
 };

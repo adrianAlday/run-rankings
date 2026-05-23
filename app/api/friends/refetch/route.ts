@@ -3,6 +3,7 @@ import { createClient } from "@/app/_utils/supabase/server";
 import axios from "axios";
 import { DateTime } from "luxon";
 import { NextResponse } from "next/server";
+import { getGroupings } from "../get-groupings/route";
 
 const getTrainingActivities = async (
   page: number,
@@ -92,13 +93,15 @@ export const GET = async (request: Request) => {
     }
   }
 
-  const hostHeader = request.headers.get("host");
+  // const hostHeader = request.headers.get("host");
 
-  await axios
-    .get(`http://${hostHeader}/api/friends/get-groupings`, {
-      headers: { authorization: `Bearer ${cronSecret}` },
-    })
-    .then((response) => response);
+  // await axios
+  //   .get(`http://${hostHeader}/api/friends/get-groupings`, {
+  //     headers: { authorization: `Bearer ${cronSecret}` },
+  //   })
+  //   .then((response) => response);
+
+  await getGroupings();
 
   return NextResponse.json({});
 };
