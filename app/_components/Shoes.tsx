@@ -231,7 +231,7 @@ const Shoes = ({ data }: ShoesProps) => {
                       <div className="text-sm font-semibold">{shoe.name}</div>
 
                       {!!isNotParetoEfficient && (
-                        <div className="text-xs">
+                        <div className="my-1 text-xs">
                           {"<<"} {surpassedBy[0].name}
                         </div>
                       )}
