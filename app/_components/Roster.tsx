@@ -190,7 +190,7 @@ const Roster = ({ data }: RosterProps) => {
         </div>
 
         <div className="my-4">
-          <Link target="_blank" href={"https://labs.strava.com/roster/"}>
+          <Link target="_blank" href={"https://labs.strava.com/roster"}>
             <div className="my-1">
               Inspired by <span className="underline">The Roster</span> from
               Strava Labs
