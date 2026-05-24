@@ -232,7 +232,7 @@ const Roster = ({ data }: RosterProps) => {
         )}
 
         <div className="my-4">
-          <LastUpdated iso={lastUpdated} />
+          <LastUpdated isoString={lastUpdated} />
         </div>
 
         <div className="my-8 flex overflow-x-scroll no-scrollbar">

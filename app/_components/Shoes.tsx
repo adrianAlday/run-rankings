@@ -164,7 +164,7 @@ const Shoes = ({ data }: ShoesProps) => {
           </div>
 
           <div className="my-4">
-            <LastUpdated iso={lastUpdated} />
+            <LastUpdated isoString={lastUpdated} />
           </div>
         </div>
 
