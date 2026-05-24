@@ -253,13 +253,13 @@ const Shoes = ({ data }: ShoesProps) => {
               {shoes.map((shoe, shoeIndex) => {
                 const value = shoe.score;
 
-                const surpassedBy = shoes.filter(
+                const surpassingShoes = shoes.filter(
                   (otherShoe) =>
                     otherShoe[energyKey] > shoe[energyKey] &&
                     otherShoe.weight < shoe.weight &&
                     otherShoe.price < shoe.price,
                 );
-                const isNotParetoEfficient = surpassedBy.length;
+                const surpassingShoe = surpassingShoes[0];
 
                 const width = value
                   ? (100 * (value - targetMinimumValue + minimumWidth)) /
@@ -271,7 +271,8 @@ const Shoes = ({ data }: ShoesProps) => {
                 return (
                   <div
                     key={shoeIndex}
-                    className={`my-4 ${isNotParetoEfficient ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
+                    id={`${shoe.id}`}
+                    className={`my-4 ${surpassingShoe ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
                   >
                     <Link
                       target="_blank"
@@ -280,12 +281,6 @@ const Shoes = ({ data }: ShoesProps) => {
                       <div className="text-sm font-semibold">
                         {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
                       </div>
-
-                      {!!isNotParetoEfficient && (
-                        <div className="my-1 text-xs">
-                          {"<<"} {surpassedBy[0].name}
-                        </div>
-                      )}
 
                       <div
                         className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
@@ -297,6 +292,16 @@ const Shoes = ({ data }: ShoesProps) => {
                         {Math.floor(shoe.score)}
                       </div>
                     </Link>
+
+                    {!!surpassingShoe && (
+                      <div className="-mt-1">
+                        <ScrollToButton id={`${surpassingShoe.id}`}>
+                          <div className=" text-xs">
+                            {"<<"} {surpassingShoe.name}
+                          </div>
+                        </ScrollToButton>
+                      </div>
+                    )}
                   </div>
                 );
               })}
