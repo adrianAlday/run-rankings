@@ -4,6 +4,8 @@ import { VercelConfig } from "@vercel/config/v1";
 const generateEveryWeekJobs = (path: string) => [
   {
     path,
+    // utc: 8am
+    // eastern: 3am winter, 4am summer
     schedule: "1 8 * * 6",
   },
 ];
