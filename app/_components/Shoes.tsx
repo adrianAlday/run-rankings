@@ -5,8 +5,10 @@ import { Shoe } from "../shoes/page";
 import Link from "next/link";
 import LastUpdated from "./LastUpdated";
 import ScrollToButton from "./ScrollToButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BuiltBy from "./BuiltBy";
+import { usePathname, useSearchParams } from "next/navigation";
+import { encodeParam } from "../_utils/url";
 
 type ShoesProps = {
   data: Shoe[];
@@ -56,7 +58,49 @@ const Shoes = ({ data }: ShoesProps) => {
     priceArray[index],
   ]);
 
-  const [price, setPrice] = useState(priceLabels[0]);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const priceParam = searchParams.get("price");
+
+  const [price, setPrice] = useState(
+    priceLabels.find(
+      (label) => label.toLowerCase() == priceParam?.toLowerCase(),
+    ) || priceLabels[0],
+  );
+
+  const idParam = searchParams.get("id");
+
+  const changePriceParam = (value: string) => {
+    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(value)}`;
+    window.history.replaceState(
+      { ...window.history.state, as: newUrl, url: newUrl },
+      "",
+      newUrl,
+    );
+  };
+
+  useEffect(() => {
+    document.getElementById(priceLabels.at(-1) as string)?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+
+    const timer = setTimeout(() => {
+      document.getElementById(price)?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
+
+      if (!priceParam) {
+        changePriceParam(price);
+      }
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const priceLimit = priceOptions.find(
     (priceOption) => priceOption[0] === price,
@@ -171,8 +215,11 @@ const Shoes = ({ data }: ShoesProps) => {
           {priceLabels.map((priceLabel) => (
             <div
               key={priceLabel}
+              id={priceLabel}
               onClick={() => {
                 setPrice(priceLabel);
+
+                changePriceParam(priceLabel);
               }}
               className={`${price === priceLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
@@ -227,7 +274,9 @@ const Shoes = ({ data }: ShoesProps) => {
                       target="_blank"
                       href={`https://runrepeat.com/${shoe.slug}`}
                     >
-                      <div className="text-sm font-semibold">{shoe.name}</div>
+                      <div className="text-sm font-semibold">
+                        {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
+                      </div>
 
                       {!!isNotParetoEfficient && (
                         <div className="my-1 text-xs">
