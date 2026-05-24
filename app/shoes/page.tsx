@@ -1,4 +1,4 @@
-import { createClient } from "@/app/_utils/supabase/client";
+import { createClient } from "@/app/_utils/supabase/server";
 import { Metadata } from "next";
 import Shoes from "../_components/Shoes";
 import { Suspense } from "react";
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const ShoesPage = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const response = await supabase.from("shoes").select("*");
   const { data, error } = response as { data: Shoe[]; error: null };
   if (error) {

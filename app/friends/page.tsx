@@ -1,4 +1,4 @@
-import { createClient } from "@/app/_utils/supabase/client";
+import { createClient } from "@/app/_utils/supabase/server";
 import { Metadata } from "next";
 import Roster from "../_components/Roster";
 import { Suspense } from "react";
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 const RosterPage = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const response = await supabase
     .from("friends")
     .select(
