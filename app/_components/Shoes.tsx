@@ -105,15 +105,7 @@ const Shoes = ({ data }: ShoesProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const priceLimit = priceOptions.find(
-    (priceOption) => priceOption[0] === price,
-  )?.[1] as number;
-
-  const filteredData = initialProcessedData.filter(
-    (shoe) => shoe.price <= priceLimit,
-  );
-
-  const initialValues = filteredData.map((shoe) => shoe.score);
+  const initialValues = initialProcessedData.map((shoe) => shoe.score);
   const initialMinimumValue = Math.min(...initialValues);
   const initialMaximumValue = Math.max(...initialValues);
   const targetMinimumValue = 1;
@@ -123,6 +115,13 @@ const Shoes = ({ data }: ShoesProps) => {
   const adjustForTopValue = (value: number) =>
     (adjustForBottomValue(value) / adjustForBottomValue(initialMaximumValue)) *
     tagetMaximumValue;
+
+  const priceLimit = priceOptions.find(
+    (priceOption) => priceOption[0] === price,
+  )?.[1] as number;
+  const filteredData = initialProcessedData.filter(
+    (shoe) => shoe.price <= priceLimit,
+  );
 
   const processedData = filteredData.map((shoe) => ({
     ...shoe,
