@@ -107,7 +107,7 @@ const Roster = ({ data }: RosterProps) => {
     }, 700);
 
     return () => clearTimeout(timer);
-  });
+  }, []);
 
   const [startDate, endDate] = rangeOptions.find(
     (rangeOption) => rangeOption[0] === range,
