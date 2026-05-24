@@ -25,10 +25,11 @@ const ShoesPage = async () => {
     console.log(error);
   }
 
-  return;
-  <Suspense>
-    <Shoes data={data || []} />
-  </Suspense>;
+  return (
+    <Suspense>
+      <Shoes data={data || []} />
+    </Suspense>
+  );
 };
 
 export default ShoesPage;
