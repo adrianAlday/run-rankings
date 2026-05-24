@@ -224,7 +224,7 @@ const Roster = ({ data }: RosterProps) => {
             >
               <span className="underline">
                 {DateTime.fromISO(latestFirstActivity.start_date).toFormat(
-                  "M/d",
+                  "LLLL d",
                 )}
               </span>
             </Link>
