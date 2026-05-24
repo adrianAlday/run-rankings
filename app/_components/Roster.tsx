@@ -1,7 +1,7 @@
 "use client";
 
 import { DateTime } from "luxon";
-import { FriendResponse } from "../friends/page";
+import { FriendRow } from "../friends/page";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
@@ -11,7 +11,7 @@ import { encodeParam } from "../_utils/url";
 import BuiltBy from "./BuiltBy";
 
 type RosterProps = {
-  data: FriendResponse[];
+  data: FriendRow[];
 };
 
 const Roster = ({ data }: RosterProps) => {

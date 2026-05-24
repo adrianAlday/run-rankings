@@ -1,7 +1,7 @@
 "use client";
 
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
-import { Shoe } from "../shoes/page";
+import { ShoeRow } from "../shoes/page";
 import Link from "next/link";
 import LastUpdated from "./LastUpdated";
 import ScrollToButton from "./ScrollToButton";
@@ -10,8 +10,13 @@ import BuiltBy from "./BuiltBy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
 
+type ShoeProcessed = ShoeRow & {
+  price: number;
+  score: number;
+};
+
 type ShoesProps = {
-  data: Shoe[];
+  data: ShoeRow[];
 };
 
 const Shoes = ({ data }: ShoesProps) => {
@@ -126,7 +131,7 @@ const Shoes = ({ data }: ShoesProps) => {
   const processedData = filteredData.map((shoe) => ({
     ...shoe,
     score: adjustForTopValue(shoe.score),
-  })) as unknown as Shoe[];
+  })) as unknown as ShoeProcessed[];
 
   const dataByType = processedData
     ?.sort(
@@ -138,7 +143,7 @@ const Shoes = ({ data }: ShoesProps) => {
 
         return accumulator;
       },
-      {} as { [key: string]: Shoe[] },
+      {} as { [key: string]: ShoeProcessed[] },
     );
   const dataEntries = Object.entries(dataByType);
 
