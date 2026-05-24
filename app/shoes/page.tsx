@@ -1,6 +1,7 @@
 import { createClient } from "@/app/_utils/supabase/client";
 import { Metadata } from "next";
 import Shoes from "../_components/Shoes";
+import { Suspense } from "react";
 
 export type Shoe = {
   name: string;
@@ -24,7 +25,10 @@ const ShoesPage = async () => {
     console.log(error);
   }
 
-  return <Shoes data={data || []} />;
+  return;
+  <Suspense>
+    <Shoes data={data || []} />
+  </Suspense>;
 };
 
 export default ShoesPage;
