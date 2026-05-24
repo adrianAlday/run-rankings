@@ -5,17 +5,13 @@ export const metadata: Metadata = {
   title: "Run Rankings",
 };
 
-const HomePage = async () => {
-  return (
-    <div>
-      <main>
-        <Button text={"👫 Friends"} url={"/friends"} />
+const HomePage = () => (
+  <main>
+    <Button text={"👫 Friends"} url={"/friends"} />
 
-        <Button text={"👠 Shoes"} url={"/shoes"} />
-      </main>
-    </div>
-  );
-};
+    <Button text={"👠 Shoes"} url={"/shoes"} />
+  </main>
+);
 
 export default HomePage;
 

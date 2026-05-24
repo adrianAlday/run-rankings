@@ -1,7 +1,7 @@
 import { createClient } from "@/app/_utils/supabase/server";
 import { Metadata } from "next";
 import Shoes from "../_components/Shoes";
-import { Suspense } from "react";
+import LoadingWrapper from "../_components/LoadingWrapper";
 
 export type Shoe = {
   name: string;
@@ -13,11 +13,7 @@ export type Shoe = {
   [key: string]: number;
 };
 
-export const metadata: Metadata = {
-  title: "Shoes - Run Rankings",
-};
-
-const ShoesPage = async () => {
+const DataWrapper = async () => {
   const supabase = await createClient();
   const response = await supabase.from("shoes").select("*");
   const { data, error } = response as { data: Shoe[]; error: null };
@@ -25,11 +21,19 @@ const ShoesPage = async () => {
     console.log(error);
   }
 
-  return (
-    <Suspense>
-      <Shoes data={data || []} />
-    </Suspense>
-  );
+  return <Shoes data={data || []} />;
 };
+
+export const metadata: Metadata = {
+  title: "Shoes - Run Rankings",
+};
+
+const ShoesPage = () => (
+  <main>
+    <LoadingWrapper>
+      <DataWrapper />
+    </LoadingWrapper>
+  </main>
+);
 
 export default ShoesPage;

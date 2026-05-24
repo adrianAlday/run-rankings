@@ -164,152 +164,150 @@ const Shoes = ({ data }: ShoesProps) => {
 
   return (
     <div>
-      <main>
-        <div className="my-8 text-xs">
-          <div className="my-4">
-            <div className="my-1">
-              Relative ratings of the energy{" "}
-              <span className="italic">absorbed</span> then{" "}
-              <span className="italic">returned</span> in{" "}
-              <span className="italic">cold</span> conditions with a penalty for{" "}
-              <span className="italic">weight</span>
-            </div>
-
-            <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] font-mono">
-              <div>energy_absorbed_forefoot</div>
-
-              <div>* energy_return_rate_forefoot</div>
-
-              <div>* ( 100% - hardness_increase_in_cold )</div>
-
-              <div>- weight * {weightPenalty}%</div>
-            </div>
+      <div className="my-8 text-xs">
+        <div className="my-4">
+          <div className="my-1">
+            Relative ratings of the energy{" "}
+            <span className="italic">absorbed</span> then{" "}
+            <span className="italic">returned</span> in{" "}
+            <span className="italic">cold</span> conditions with a penalty for{" "}
+            <span className="italic">weight</span>
           </div>
 
-          <div className="my-4">
-            <Link target="_blank" href={paretoUrl}>
-              <div>
-                <div className="my-1">
-                  Grayed out if some other shoe is bouncier, lighter, and
-                  currently cheaper
+          <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] font-mono">
+            <div>energy_absorbed_forefoot</div>
+
+            <div>* energy_return_rate_forefoot</div>
+
+            <div>* ( 100% - hardness_increase_in_cold )</div>
+
+            <div>- weight * {weightPenalty}%</div>
+          </div>
+        </div>
+
+        <div className="my-4">
+          <Link target="_blank" href={paretoUrl}>
+            <div>
+              <div className="my-1">
+                Grayed out if some other shoe is bouncier, lighter, and
+                currently cheaper
+              </div>
+
+              <div className="my-1 underline">{paretoUrl}</div>
+            </div>
+          </Link>
+        </div>
+
+        <div className="my-4">
+          <Link target="_blank" href={"https://runrepeat.com"}>
+            <div>
+              Lab data and current prices from{" "}
+              <span className="underline">RunRepeat</span>
+            </div>
+          </Link>
+        </div>
+
+        <div className="my-4">
+          <LastUpdated isoString={lastUpdated} />
+        </div>
+      </div>
+
+      <div className="my-8 flex overflow-x-scroll no-scrollbar">
+        {priceLabels.map((priceLabel) => (
+          <div
+            key={priceLabel}
+            id={priceLabel}
+            onClick={() => {
+              setPrice(priceLabel);
+
+              changePriceParam(priceLabel);
+            }}
+            className={`${price === priceLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+          >
+            {priceLabel}
+          </div>
+        ))}
+      </div>
+
+      {dataEntries.map(([type, shoes], index) => {
+        const typeToScrollTo =
+          dataEntries[dataEntries.length === index + 1 ? 0 : index + 1][0];
+
+        return (
+          <div key={type} id={type}>
+            <div className="my-8 flex justify-between">
+              <div className="text-sm font-semibold">{capitalize(type)}</div>
+
+              <ScrollToButton id={typeToScrollTo}>
+                <div className="text-xs">
+                  jump to{" "}
+                  <span className="underline">
+                    {capitalize(typeToScrollTo)}
+                  </span>
                 </div>
-
-                <div className="my-1 underline">{paretoUrl}</div>
-              </div>
-            </Link>
-          </div>
-
-          <div className="my-4">
-            <Link target="_blank" href={"https://runrepeat.com"}>
-              <div>
-                Lab data and current prices from{" "}
-                <span className="underline">RunRepeat</span>
-              </div>
-            </Link>
-          </div>
-
-          <div className="my-4">
-            <LastUpdated isoString={lastUpdated} />
-          </div>
-        </div>
-
-        <div className="my-8 flex overflow-x-scroll no-scrollbar">
-          {priceLabels.map((priceLabel) => (
-            <div
-              key={priceLabel}
-              id={priceLabel}
-              onClick={() => {
-                setPrice(priceLabel);
-
-                changePriceParam(priceLabel);
-              }}
-              className={`${price === priceLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-            >
-              {priceLabel}
+              </ScrollToButton>
             </div>
-          ))}
-        </div>
 
-        {dataEntries.map(([type, shoes], index) => {
-          const typeToScrollTo =
-            dataEntries[dataEntries.length === index + 1 ? 0 : index + 1][0];
+            {shoes.map((shoe, shoeIndex) => {
+              const value = shoe.score;
 
-          return (
-            <div key={type} id={type}>
-              <div className="my-8 flex justify-between">
-                <div className="text-sm font-semibold">{capitalize(type)}</div>
+              const surpassingShoes = shoes.filter(
+                (otherShoe) =>
+                  otherShoe[energyKey] > shoe[energyKey] &&
+                  otherShoe.weight < shoe.weight &&
+                  otherShoe.price < shoe.price,
+              );
+              const surpassingShoe = surpassingShoes[0];
 
-                <ScrollToButton id={typeToScrollTo}>
-                  <div className="text-xs">
-                    jump to{" "}
-                    <span className="underline">
-                      {capitalize(typeToScrollTo)}
-                    </span>
-                  </div>
-                </ScrollToButton>
-              </div>
+              const width = value
+                ? (100 * (value - targetMinimumValue + minimumWidth)) /
+                  (tagetMaximumValue - targetMinimumValue + minimumWidth)
+                : minimumWidth;
 
-              {shoes.map((shoe, shoeIndex) => {
-                const value = shoe.score;
+              const backgroundColor = getValueRgb(value, valueColors);
 
-                const surpassingShoes = shoes.filter(
-                  (otherShoe) =>
-                    otherShoe[energyKey] > shoe[energyKey] &&
-                    otherShoe.weight < shoe.weight &&
-                    otherShoe.price < shoe.price,
-                );
-                const surpassingShoe = surpassingShoes[0];
-
-                const width = value
-                  ? (100 * (value - targetMinimumValue + minimumWidth)) /
-                    (tagetMaximumValue - targetMinimumValue + minimumWidth)
-                  : minimumWidth;
-
-                const backgroundColor = getValueRgb(value, valueColors);
-
-                return (
-                  <div
-                    key={shoeIndex}
-                    id={`${shoe.id}`}
-                    className={`my-4 ${surpassingShoe ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
+              return (
+                <div
+                  key={shoeIndex}
+                  id={`${shoe.id}`}
+                  className={`my-4 ${surpassingShoe ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
+                >
+                  <Link
+                    target="_blank"
+                    href={`https://runrepeat.com/${shoe.slug}`}
                   >
-                    <Link
-                      target="_blank"
-                      href={`https://runrepeat.com/${shoe.slug}`}
+                    <div className="text-sm font-semibold">
+                      {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
+                    </div>
+
+                    <div
+                      className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
+                      style={{
+                        width: `${width}%`,
+                        backgroundColor: `rgb(${backgroundColor.join(",")})`,
+                      }}
                     >
-                      <div className="text-sm font-semibold">
-                        {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
-                      </div>
+                      {Math.floor(shoe.score)}
+                    </div>
+                  </Link>
 
-                      <div
-                        className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
-                        style={{
-                          width: `${width}%`,
-                          backgroundColor: `rgb(${backgroundColor.join(",")})`,
-                        }}
-                      >
-                        {Math.floor(shoe.score)}
-                      </div>
-                    </Link>
+                  {!!surpassingShoe && (
+                    <div className="-mt-1">
+                      <ScrollToButton id={`${surpassingShoe.id}`}>
+                        <div className=" text-xs">
+                          {"<<"} {surpassingShoe.name}
+                        </div>
+                      </ScrollToButton>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
 
-                    {!!surpassingShoe && (
-                      <div className="-mt-1">
-                        <ScrollToButton id={`${surpassingShoe.id}`}>
-                          <div className=" text-xs">
-                            {"<<"} {surpassingShoe.name}
-                          </div>
-                        </ScrollToButton>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-
-        <BuiltBy />
-      </main>
+      <BuiltBy />
     </div>
   );
 };

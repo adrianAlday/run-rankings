@@ -1,7 +1,7 @@
 import { createClient } from "@/app/_utils/supabase/server";
 import { Metadata } from "next";
 import Roster from "../_components/Roster";
-import { Suspense } from "react";
+import LoadingWrapper from "../_components/LoadingWrapper";
 
 export type FriendResponse = {
   id: number;
@@ -16,11 +16,7 @@ export type FriendResponse = {
   }[];
 };
 
-export const metadata: Metadata = {
-  title: "Roster - Run Rankings",
-};
-
-const RosterPage = async () => {
+const DataWrapper = async () => {
   const supabase = await createClient();
   const response = await supabase
     .from("friends")
@@ -35,11 +31,19 @@ const RosterPage = async () => {
     console.log(error);
   }
 
-  return (
-    <Suspense>
-      <Roster data={data || []} />
-    </Suspense>
-  );
+  return <Roster data={data || []} />;
 };
+
+export const metadata: Metadata = {
+  title: "Roster - Run Rankings",
+};
+
+const RosterPage = () => (
+  <main>
+    <LoadingWrapper>
+      <DataWrapper />
+    </LoadingWrapper>
+  </main>
+);
 
 export default RosterPage;
