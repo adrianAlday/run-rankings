@@ -63,16 +63,19 @@ const Shoes = ({ data }: ShoesProps) => {
 
   const priceParam = searchParams.get("price");
 
+  const withoutCurrencySymbol = (value: string) => value.replace("$", "");
+
   const [price, setPrice] = useState(
     priceLabels.find(
-      (label) => label.toLowerCase() == priceParam?.toLowerCase(),
+      (label) =>
+        withoutCurrencySymbol(label).toLowerCase() == priceParam?.toLowerCase(),
     ) || priceLabels[0],
   );
 
   const idParam = searchParams.get("id");
 
   const changePriceParam = (value: string) => {
-    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(value)}`;
+    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(withoutCurrencySymbol(value))}`;
     window.history.replaceState(
       { ...window.history.state, as: newUrl, url: newUrl },
       "",
