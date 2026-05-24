@@ -17,13 +17,20 @@ type RosterProps = {
 const Roster = ({ data }: RosterProps) => {
   const now = DateTime.now();
 
-  const dates = data.flatMap((friend) =>
-    friend.groupings.map((grouping) =>
-      DateTime.fromISO(grouping.activities.start_date),
-    ),
-  );
-  const earliestActivity = DateTime.min(...dates) || now;
-  const latestActivity = DateTime.max(...dates) || now;
+  const lastUpdated = data
+    .flatMap((friend) =>
+      friend.groupings.map((grouping) => grouping.activities.updated_at),
+    )
+    .sort()
+    .at(-1) as string;
+
+  const starts = data
+    .flatMap((friend) =>
+      friend.groupings.map((grouping) => grouping.activities.start_date),
+    )
+    .sort();
+  const earliestActivity = DateTime.fromISO(starts.at(0) as string);
+  const latestActivity = DateTime.fromISO(starts.at(-1) as string);
 
   const yearsArray = Array.from(
     { length: latestActivity.year - earliestActivity.year + 1 },
@@ -100,7 +107,7 @@ const Roster = ({ data }: RosterProps) => {
     }, 700);
 
     return () => clearTimeout(timer);
-  }, []);
+  });
 
   const [startDate, endDate] = rangeOptions.find(
     (rangeOption) => rangeOption[0] === range,
@@ -132,7 +139,7 @@ const Roster = ({ data }: RosterProps) => {
     .slice(0, maxDisplayCount);
   const extraFriends = allFriends.length - friends.length;
 
-  const values = friends.map((friend) => friend.time).sort();
+  const values = friends.map((friend) => friend.time);
   const minimumValue = Math.min(...values);
   const maximumValue = Math.max(...values);
   const maxWidth = 320;
@@ -225,7 +232,7 @@ const Roster = ({ data }: RosterProps) => {
         )}
 
         <div className="my-4">
-          <LastUpdated dateTime={latestActivity as DateTime<true>} />
+          <LastUpdated iso={lastUpdated} />
         </div>
 
         <div className="my-8 flex overflow-x-scroll no-scrollbar">
