@@ -258,7 +258,7 @@ const Shoes = ({ data }: ShoesProps) => {
 
               {!!find.length && (
                 <button
-                  className="absolute text-xl right-2 top-1/2 -translate-y-1/2 hover:text-[rgb(74,119,145)]"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 px-2 py-1 text-xl hover:text-[rgb(74,119,145)]"
                   onClick={() => {
                     setFind(initialFind);
 
