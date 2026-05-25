@@ -50,7 +50,7 @@ const Roster = ({ data }: RosterProps) => {
   ];
   const rangeOptions = [
     ["90 days", [now.plus({ days: -90 }).startOf("day"), now.endOf("day")]],
-    ["Year-to-date", generateYearDates(now.year)],
+    ["Year to date", generateYearDates(now.year)],
     [goatOption, [earliestActivity.startOf("day"), now.endOf("day")]],
     ...completedYearsArray.map((year) => [`${year}`, generateYearDates(year)]),
     ["Run era", generateYearDates(2021, 2021 + 1000)],
