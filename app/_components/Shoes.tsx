@@ -9,7 +9,7 @@ import { useState } from "react";
 import BuiltBy from "./BuiltBy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
-import { normalizeStringForFind } from "../_utils/strings";
+import { capitalize, normalizeStringForFind } from "../_utils/strings";
 
 type ShoesProps = {
   data: ShoeRow[];
@@ -129,9 +129,6 @@ const Shoes = ({ data }: ShoesProps) => {
     .map((shoe) => shoe.updated_at)
     .sort()
     .at(-1) as string;
-
-  const capitalize = (value: string) =>
-    value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
   const minimumWidth = 5;
 
