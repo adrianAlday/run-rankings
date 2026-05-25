@@ -235,46 +235,47 @@ const Roster = ({ data }: RosterProps) => {
         </div>
       </div>
 
-      <div id="filters" className="my-8">
-        <div className="my-4 flex flex-wrap">
-          {rangeLabels.map((rangeLabel) => (
-            <div
-              key={rangeLabel}
-              onClick={() => {
-                setRange(rangeLabel);
+      <div className="min-h-lvh">
+        <div id="filters" className="my-8">
+          <div className="my-4 flex flex-wrap">
+            {rangeLabels.map((rangeLabel) => (
+              <div
+                key={rangeLabel}
+                onClick={() => {
+                  setRange(rangeLabel);
+
+                  scrollIdIntoView("filters");
+
+                  changeParams({ range: rangeLabel });
+                }}
+                className={`mr-2 my-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+              >
+                {rangeLabel}
+              </div>
+            ))}
+          </div>
+
+          <div className="my-4">
+            <input
+              type="text"
+              value={find}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const nextFind = event.target.value;
+
+                setFind(nextFind);
+
+                setRange(goatOption);
 
                 scrollIdIntoView("filters");
 
-                changeParams({ range: rangeLabel });
+                changeParams({ range: goatOption, find: nextFind });
               }}
-              className={`mr-2 my-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-            >
-              {rangeLabel}
-            </div>
-          ))}
+              className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
+              placeholder="Find"
+            />
+          </div>
         </div>
 
-        <div className="my-4">
-          <input
-            type="text"
-            value={find}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              const nextFind = event.target.value;
-
-              setFind(nextFind);
-
-              setRange(goatOption);
-
-              scrollIdIntoView("filters");
-
-              changeParams({ range: goatOption, find: nextFind });
-            }}
-            className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
-            placeholder="Find"
-          />
-        </div>
-      </div>
-      <div className="min-h-screen">
         {shownFriends.map((friend, index) => {
           const value = friend.time;
 

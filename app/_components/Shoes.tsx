@@ -71,7 +71,9 @@ const Shoes = ({ data }: ShoesProps) => {
 
   const priceParam = searchParams.get("price");
 
-  const [price, setPrice] = useState(Number(priceParam) || priceOptions[0]);
+  const [price, setPrice] = useState(
+    Number(priceParam) || (priceOptions.at(-1) as number),
+  );
 
   const typeOptions = [
     ...new Set(
@@ -191,67 +193,67 @@ const Shoes = ({ data }: ShoesProps) => {
         </div>
       </div>
 
-      <div id="filters" className="my-8">
-        <div className="my-2 flex flex-wrap">
-          {priceOptions.map((priceOption, index) => (
-            <div
-              key={priceOption}
-              id={`${priceOption}`}
-              onClick={() => {
-                setPrice(priceOption);
+      <div className="min-h-lvh">
+        <div id="filters" className="my-8">
+          <div className="my-2 flex flex-wrap">
+            {priceOptions.map((priceOption, index) => (
+              <div
+                key={priceOption}
+                id={`${priceOption}`}
+                onClick={() => {
+                  setPrice(priceOption);
+
+                  scrollIdIntoView("filters");
+
+                  changeParams({ price: priceOption });
+                }}
+                className={`mr-2 my-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+              >
+                {index === priceOptions.length - 1
+                  ? capitalize(allOption)
+                  : `${index === 0 ? "Under " : ""}$${priceOption}`}
+              </div>
+            ))}
+          </div>
+
+          <div className="my-2 flex flex-wrap">
+            {typeOptions.map((typeOption) => (
+              <div
+                key={typeOption}
+                id={typeOption}
+                onClick={() => {
+                  setType(typeOption);
+
+                  scrollIdIntoView("filters");
+
+                  changeParams({ type: typeOption });
+                }}
+                className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${type === typeOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+              >
+                {capitalize(typeOption)}
+              </div>
+            ))}
+          </div>
+
+          <div className="my-4">
+            <input
+              type="text"
+              value={find}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const nextFind = event.target.value;
+
+                setFind(nextFind);
 
                 scrollIdIntoView("filters");
 
-                changeParams({ price: priceOption });
+                changeParams({ find: nextFind });
               }}
-              className={`mr-2 my-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-            >
-              {index === priceOptions.length - 1
-                ? capitalize(allOption)
-                : `${index === 0 ? "Under " : ""}$${priceOption}`}
-            </div>
-          ))}
+              className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
+              placeholder="Find"
+            />
+          </div>
         </div>
 
-        <div className="my-2 flex flex-wrap">
-          {typeOptions.map((typeOption) => (
-            <div
-              key={typeOption}
-              id={typeOption}
-              onClick={() => {
-                setType(typeOption);
-
-                scrollIdIntoView("filters");
-
-                changeParams({ type: typeOption });
-              }}
-              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${type === typeOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-            >
-              {capitalize(typeOption)}
-            </div>
-          ))}
-        </div>
-
-        <div className="my-4">
-          <input
-            type="text"
-            value={find}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              const nextFind = event.target.value;
-
-              setFind(nextFind);
-
-              scrollIdIntoView("filters");
-
-              changeParams({ find: nextFind });
-            }}
-            className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
-            placeholder="Find"
-          />
-        </div>
-      </div>
-
-      <div className="min-h-screen">
         {processedData.map((shoe, shoeIndex) => {
           const value = shoe.score;
 
