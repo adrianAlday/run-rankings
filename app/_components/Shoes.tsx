@@ -191,7 +191,7 @@ const Shoes = ({ data }: ShoesProps) => {
       </div>
 
       <div className="my-8">
-        <div className="my-4 flex flex-wrap">
+        <div className="my-2 flex flex-wrap">
           {priceOptions.map((priceOption, index) => (
             <div
               key={priceOption}
@@ -210,7 +210,7 @@ const Shoes = ({ data }: ShoesProps) => {
           ))}
         </div>
 
-        <div className="my-4 flex overflow-x-scroll no-scrollbar">
+        <div className="my-2 flex flex-wrap">
           {typeOptions.map((typeOption) => (
             <div
               key={typeOption}
