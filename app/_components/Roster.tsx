@@ -2,7 +2,7 @@
 
 import { DateTime } from "luxon";
 import { FriendRow } from "../friends/page";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
@@ -238,20 +238,26 @@ const Roster = ({ data }: RosterProps) => {
       <div className="min-h-lvh">
         <div id="filters" className="my-8">
           <div className="my-4 flex flex-wrap">
-            {rangeLabels.map((rangeLabel) => (
-              <div
-                key={rangeLabel}
-                onClick={() => {
-                  setRange(rangeLabel);
+            {rangeLabels.map((rangeLabel, index) => (
+              <Fragment key={rangeLabel}>
+                {[
+                  rangeLabels.findIndex((label) => label.includes("20")),
+                  rangeLabels.findIndex((label) => label.includes("era")),
+                ].includes(index) && <div className="basis-full" />}
 
-                  scrollIdIntoView("filters");
+                <div
+                  onClick={() => {
+                    setRange(rangeLabel);
 
-                  changeParams({ range: rangeLabel });
-                }}
-                className={`mr-2 my-1 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-              >
-                {rangeLabel}
-              </div>
+                    scrollIdIntoView("filters");
+
+                    changeParams({ range: rangeLabel });
+                  }}
+                  className={`mr-2 my-1 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+                >
+                  {rangeLabel}
+                </div>
+              </Fragment>
             ))}
           </div>
 
