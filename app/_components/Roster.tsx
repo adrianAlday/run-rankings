@@ -234,8 +234,10 @@ const Roster = ({ data }: RosterProps) => {
         <div className="my-4">
           <LastUpdated isoString={lastUpdated} />
         </div>
+      </div>
 
-        <div className="my-8 flex overflow-x-scroll no-scrollbar">
+      <div className="my-8">
+        <div className="my-4 flex overflow-x-scroll no-scrollbar">
           {rangeLabels.map((rangeLabel) => (
             <div
               key={rangeLabel}
@@ -245,7 +247,7 @@ const Roster = ({ data }: RosterProps) => {
 
                 changeRangeParam(rangeLabel);
               }}
-              className={`${range === rangeLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md  py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
               {rangeLabel}
             </div>
