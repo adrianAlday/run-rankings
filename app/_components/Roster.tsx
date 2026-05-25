@@ -17,14 +17,19 @@ type RosterProps = {
 const Roster = ({ data }: RosterProps) => {
   const now = DateTime.now();
 
-  const lastUpdated = data
+  const idDenylist = (process.env.NEXT_PUBLIC_STRAVA_ID_DENYLIST || "")
+    .split(", ")
+    .map((string) => Number(string));
+  const filteredData = data.filter(({ id }) => !idDenylist.includes(id));
+
+  const lastUpdated = filteredData
     .flatMap((friend) =>
       friend.groupings.map((grouping) => grouping.activities.updated_at),
     )
     .sort()
     .at(-1) as string;
 
-  const starts = data
+  const starts = filteredData
     .flatMap((friend) =>
       friend.groupings.map((grouping) => grouping.activities.start_date),
     )
@@ -106,11 +111,8 @@ const Roster = ({ data }: RosterProps) => {
   const searchNormalizeString = (value: string) =>
     value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
-  const idDenylist = (process.env.NEXT_PUBLIC_STRAVA_ID_DENYLIST || "")
-    .split(", ")
-    .map((string) => Number(string));
   const maxDisplayCount = 50;
-  const allFriends = data
+  const allFriends = filteredData
     .map(({ id, name, groupings }) => {
       const time = groupings.reduce((accumulator, grouping) => {
         const { start_date, moving_time } = grouping.activities;
@@ -127,7 +129,6 @@ const Roster = ({ data }: RosterProps) => {
     .sort((a, b) => b.time - a.time || a.name.localeCompare(b.name))
     .filter(
       (friend) =>
-        !idDenylist.includes(friend.id) &&
         friend.time > 0 &&
         (!find ||
           searchNormalizeString(friend.name).includes(
@@ -150,7 +151,7 @@ const Roster = ({ data }: RosterProps) => {
     [27, [249, 215, 73]], // yellow
   ];
 
-  const friendSeconds = data.reduce(
+  const friendSeconds = filteredData.reduce(
     (accumulator, friend) =>
       accumulator +
       friend.groupings.reduce(
@@ -161,7 +162,7 @@ const Roster = ({ data }: RosterProps) => {
     0,
   );
 
-  const firstActivityData = data.map(({ id, name, groupings }) => ({
+  const firstActivityData = filteredData.map(({ id, name, groupings }) => ({
     id,
     name,
     firstActivity: groupings
@@ -198,7 +199,7 @@ const Roster = ({ data }: RosterProps) => {
         </div>
 
         <div className="my-4">
-          {data.length.toLocaleString("en-US")} unique athletes,{" "}
+          {filteredData.length.toLocaleString("en-US")} unique athletes,{" "}
           {Math.floor(friendSeconds / 60 / 60).toLocaleString("en-US")}{" "}
           friend-hours and counting
         </div>
