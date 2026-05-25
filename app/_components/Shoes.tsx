@@ -32,6 +32,19 @@ const Shoes = ({ data }: ShoesProps) => {
       score: shoe[energyKey] - (shoe.weight * weightPenalty) / 100,
     }));
 
+  const initialValues = initialProcessedData.map((shoe) => shoe.score);
+  const initialMinimumValue = Math.min(...initialValues);
+  const initialMaximumValue = Math.max(...initialValues);
+  const targetMinimumValue = 1;
+  const tagetMaximumValue = 99;
+  const adjustForBottomValue = (value: number) =>
+    value - initialMinimumValue + targetMinimumValue;
+  const adjustForTopValue = (value: number) =>
+    (adjustForBottomValue(value) / adjustForBottomValue(initialMaximumValue)) *
+    tagetMaximumValue;
+
+  const allOption = "all";
+
   const maximumPrice = Math.max(
     ...initialProcessedData.map((shoe) => shoe.price),
   );
@@ -39,12 +52,13 @@ const Shoes = ({ data }: ShoesProps) => {
   const topPriceOption = Math.ceil(maximumPrice / priceSteps) * priceSteps;
   const priceOptions = Array.from(
     { length: (topPriceOption - priceSteps) / priceSteps + 1 },
-    (_undefined, index) => topPriceOption - priceSteps * index,
+    (_undefined, index) => priceSteps * (index + 1),
   )
     .map((price) => [
       price,
       initialProcessedData.filter((shoe) => shoe.price <= price).length,
     ])
+    .filter((value) => value[1])
     .filter((value, index, array) =>
       index === 0 ? true : value[1] !== array[index - 1][1],
     )
@@ -57,15 +71,13 @@ const Shoes = ({ data }: ShoesProps) => {
 
   const [price, setPrice] = useState(Number(priceParam) || priceOptions[0]);
 
-  const allTypeOption = "all";
-
   const typeOptions = [
     ...new Set(
       initialProcessedData
         .map((shoe) => shoe.type)
         .sort((a, b) => a.localeCompare(b)),
     ),
-    allTypeOption,
+    allOption,
   ];
 
   const typeParam = searchParams.get("type");
@@ -115,17 +127,6 @@ const Shoes = ({ data }: ShoesProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const initialValues = initialProcessedData.map((shoe) => shoe.score);
-  const initialMinimumValue = Math.min(...initialValues);
-  const initialMaximumValue = Math.max(...initialValues);
-  const targetMinimumValue = 1;
-  const tagetMaximumValue = 99;
-  const adjustForBottomValue = (value: number) =>
-    value - initialMinimumValue + targetMinimumValue;
-  const adjustForTopValue = (value: number) =>
-    (adjustForBottomValue(value) / adjustForBottomValue(initialMaximumValue)) *
-    tagetMaximumValue;
-
   const searchNormalizeString = (value: string) =>
     value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -133,7 +134,7 @@ const Shoes = ({ data }: ShoesProps) => {
     .filter(
       (shoe) =>
         shoe.price <= price &&
-        (type === allTypeOption || shoe.type === type) &&
+        (type === allOption || shoe.type === type) &&
         (!find ||
           searchNormalizeString(shoe.name).includes(
             searchNormalizeString(find),
@@ -230,7 +231,9 @@ const Shoes = ({ data }: ShoesProps) => {
               }}
               className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
-              {index === 0 ? "Under " : ""}${priceOption}
+              {index === priceOptions.length - 1
+                ? capitalize(allOption)
+                : `${index === 0 ? "Under " : ""}$${priceOption}`}
             </div>
           ))}
         </div>
