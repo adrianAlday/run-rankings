@@ -307,6 +307,13 @@ const Shoes = ({ data }: ShoesProps) => {
           );
         })}
 
+        {!processedData.length && (
+          <div className="my-4 text-sm font-semibold">
+            No {type !== allOption ? type : ""} {find}
+            {price !== priceOptions.at(-1) ? ` under $${price}` : ""} {":("}
+          </div>
+        )}
+
         <BuiltBy />
       </div>
     </div>

@@ -335,10 +335,11 @@ const Roster = ({ data }: RosterProps) => {
 
         {!shownFriends.length && (
           <div className="my-4 text-sm font-semibold">
-            {":("} in{" "}
+            No {find} in{" "}
             {range === goatOption
               ? "the history of the universe"
-              : `${range.includes("era") ? "the " : ""}${range}`}
+              : `${range.includes("era") ? "the " : ""}${range}`}{" "}
+            {":("}
           </div>
         )}
 
