@@ -50,7 +50,7 @@ const Roster = ({ data }: RosterProps) => {
       goatOption,
       [earliestActivity.startOf("day"), latestActivity.endOf("day")],
     ],
-    ...yearsArray.map((year, index) => [
+    ...yearsArray.map((year) => [
       `${year}`,
       [
         DateTime.fromISO(`${year}-01-01`).startOf("day"),
@@ -75,6 +75,11 @@ const Roster = ({ data }: RosterProps) => {
   const rangeLabels = rangeOptions.map(
     (rangeOption) => rangeOption[0],
   ) as string[];
+
+  const rangeIndexesForRowStart = [
+    rangeLabels.findIndex((label) => label === `${yearsArray[0]}`),
+    rangeLabels.findIndex((label) => label.includes("era")),
+  ];
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -240,10 +245,9 @@ const Roster = ({ data }: RosterProps) => {
           <div className="my-4 flex flex-wrap">
             {rangeLabels.map((rangeLabel, index) => (
               <Fragment key={rangeLabel}>
-                {[
-                  rangeLabels.findIndex((label) => label.includes("2")),
-                  rangeLabels.findIndex((label) => label.includes("era")),
-                ].includes(index) && <div className="basis-full" />}
+                {rangeIndexesForRowStart.includes(index) && (
+                  <div className="basis-full" />
+                )}
 
                 <div
                   onClick={() => {
