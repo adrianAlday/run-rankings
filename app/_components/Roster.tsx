@@ -70,7 +70,9 @@ const Roster = ({ data }: RosterProps) => {
 
   const findParam = searchParams.get("find");
 
-  const [find, setFind] = useState(findParam || "");
+  const initialFind = "";
+
+  const [find, setFind] = useState(findParam || initialFind);
 
   const rangeParam = searchParams.get("range");
 
@@ -250,24 +252,39 @@ const Roster = ({ data }: RosterProps) => {
           </div>
 
           <div className="my-4">
-            <input
-              type="text"
-              value={find}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                const nextFind = event.target.value;
+            <div className="relative">
+              <input
+                type="text"
+                value={find}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  const nextFind = event.target.value;
 
-                setFind(nextFind);
+                  setFind(nextFind);
 
-                setRange(goatOption);
+                  setRange(goatOption);
 
-                scrollIdIntoView("filters");
+                  scrollIdIntoView("filters");
 
-                changeParams({ range: goatOption, find: nextFind });
-              }}
-              className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-md font-medium
+                  changeParams({ range: goatOption, find: nextFind });
+                }}
+                className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-md font-medium
  transition-all duration-700 transition-discrete`}
-              placeholder="Find"
-            />
+                placeholder="Find"
+              />
+
+              {!!find.length && (
+                <button
+                  className="absolute text-xl right-2 top-1/2 -translate-y-1/2 hover:text-[rgb(74,119,145)]"
+                  onClick={() => {
+                    setFind(initialFind);
+
+                    changeParams({ find: initialFind });
+                  }}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
