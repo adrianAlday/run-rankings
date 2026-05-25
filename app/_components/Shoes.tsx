@@ -9,6 +9,7 @@ import { useState } from "react";
 import BuiltBy from "./BuiltBy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
+import { normalizeStringForFind } from "../_utils/strings";
 
 type ShoesProps = {
   data: ShoeRow[];
@@ -104,17 +105,14 @@ const Shoes = ({ data }: ShoesProps) => {
     );
   };
 
-  const searchNormalizeString = (value: string) =>
-    value.toLowerCase().replace(/[^a-z0-9]/g, "");
-
   const processedData = initialProcessedData
     .filter(
       (shoe) =>
         shoe.price <= price &&
         (type === allOption || shoe.type === type) &&
         (!find ||
-          searchNormalizeString(shoe.name).includes(
-            searchNormalizeString(find),
+          normalizeStringForFind(shoe.name).includes(
+            normalizeStringForFind(find),
           )),
     )
     .map((shoe) => ({

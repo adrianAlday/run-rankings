@@ -9,6 +9,7 @@ import LastUpdated from "./LastUpdated";
 import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
 import BuiltBy from "./BuiltBy";
+import { normalizeStringForFind } from "../_utils/strings";
 
 type RosterProps = {
   data: FriendRow[];
@@ -108,9 +109,6 @@ const Roster = ({ data }: RosterProps) => {
     (rangeOption) => rangeOption[0] === range,
   )?.[1] as DateTime<true>[];
 
-  const searchNormalizeString = (value: string) =>
-    value.toLowerCase().replace(/[^a-z0-9]/g, "");
-
   const maxDisplayCount = 50;
   const allFriends = filteredData
     .map(({ id, name, groupings }) => {
@@ -131,8 +129,8 @@ const Roster = ({ data }: RosterProps) => {
       (friend) =>
         friend.time > 0 &&
         (!find ||
-          searchNormalizeString(friend.name).includes(
-            searchNormalizeString(find),
+          normalizeStringForFind(friend.name).includes(
+            normalizeStringForFind(find),
           )),
     );
 
