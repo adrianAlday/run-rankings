@@ -10,11 +10,6 @@ import BuiltBy from "./BuiltBy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
 
-type ShoeProcessed = ShoeRow & {
-  price: number;
-  score: number;
-};
-
 type ShoesProps = {
   data: ShoeRow[];
 };
@@ -42,11 +37,10 @@ const Shoes = ({ data }: ShoesProps) => {
   );
   const priceSteps = 100;
   const topPriceOption = Math.ceil(maximumPrice / priceSteps) * priceSteps;
-  const initialPriceArray = Array.from(
+  const priceOptions = Array.from(
     { length: (topPriceOption - priceSteps) / priceSteps + 1 },
     (_undefined, index) => topPriceOption - priceSteps * index,
-  );
-  const priceArray = initialPriceArray
+  )
     .map((price) => [
       price,
       initialProcessedData.filter((shoe) => shoe.price <= price).length,
@@ -55,27 +49,28 @@ const Shoes = ({ data }: ShoesProps) => {
       index === 0 ? true : value[1] !== array[index - 1][1],
     )
     .map((value) => value[0]);
-  const priceLabels = priceArray.map(
-    (rangeOption, index) => `${index === 0 ? "Under " : ""}$${rangeOption}`,
-  ) as string[];
-  const priceOptions = priceLabels.map((label, index) => [
-    label,
-    priceArray[index],
-  ]);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const priceParam = searchParams.get("price");
 
-  const withoutCurrencySymbol = (value: string) => value.replace("$", "");
+  const [price, setPrice] = useState(Number(priceParam) || priceOptions[0]);
 
-  const [price, setPrice] = useState(
-    priceLabels.find(
-      (label) =>
-        withoutCurrencySymbol(label).toLowerCase() == priceParam?.toLowerCase(),
-    ) || priceLabels[0],
-  );
+  const allTypeOption = "all";
+
+  const typeOptions = [
+    ...new Set(
+      initialProcessedData
+        .map((shoe) => shoe.type)
+        .sort((a, b) => a.localeCompare(b)),
+    ),
+    allTypeOption,
+  ];
+
+  const typeParam = searchParams.get("type");
+
+  const [type, setType] = useState(typeParam || (typeOptions.at(-1) as string));
 
   const findParam = searchParams.get("find");
 
@@ -83,11 +78,12 @@ const Shoes = ({ data }: ShoesProps) => {
 
   const idParam = searchParams.get("id");
 
-  const changeParams = (entries: { [key: string]: string }) => {
+  const changeParams = (entries: { [key: string]: string | number }) => {
     const nextPrice = entries.price || price;
+    const nextType = entries.type || type;
     const nextFind = entries.find || find;
 
-    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(withoutCurrencySymbol(nextPrice))}&find=${encodeParam(withoutCurrencySymbol(nextFind))}`;
+    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(nextPrice)}&type=${encodeParam(nextType)}&find=${encodeParam(nextFind)}`;
 
     window.history.replaceState(
       { ...window.history.state, as: newUrl, url: newUrl },
@@ -96,22 +92,23 @@ const Shoes = ({ data }: ShoesProps) => {
     );
   };
 
-  useEffect(() => {
-    document.getElementById(priceLabels.at(-1) as string)?.scrollIntoView({
+  const scrollIdIntoView = (id: string | number | undefined) =>
+    document.getElementById(`${id}`)?.scrollIntoView({
       behavior: "smooth",
       block: "nearest",
       inline: "start",
     });
 
+  useEffect(() => {
+    scrollIdIntoView(priceOptions.at(-1));
+    scrollIdIntoView(typeOptions.at(-1));
+
     const timer = setTimeout(() => {
-      document.getElementById(price)?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "start",
-      });
+      scrollIdIntoView(price);
+      scrollIdIntoView(type);
 
       if (!priceParam) {
-        changeParams({ price, find });
+        changeParams({ price, type, find });
       }
     }, 700);
 
@@ -129,41 +126,26 @@ const Shoes = ({ data }: ShoesProps) => {
     (adjustForBottomValue(value) / adjustForBottomValue(initialMaximumValue)) *
     tagetMaximumValue;
 
-  const priceLimit = priceOptions.find(
-    (priceOption) => priceOption[0] === price,
-  )?.[1] as number;
-
   const searchNormalizeString = (value: string) =>
     value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
-  const filteredData = initialProcessedData.filter(
-    (shoe) =>
-      shoe.price <= priceLimit &&
-      (!find ||
-        searchNormalizeString(shoe.name).includes(searchNormalizeString(find))),
-  );
-
-  const processedData = filteredData.map((shoe) => ({
-    ...shoe,
-    score: adjustForTopValue(shoe.score),
-  })) as unknown as ShoeProcessed[];
-
-  const dataByType = processedData
-    ?.sort(
-      (a, b) =>
-        a.type.localeCompare(b.type) ||
-        (b.score || 0) - (a.score || 0) ||
-        a.name.localeCompare(b.name),
+  const processedData = initialProcessedData
+    .filter(
+      (shoe) =>
+        shoe.price <= price &&
+        (type === allTypeOption || shoe.type === type) &&
+        (!find ||
+          searchNormalizeString(shoe.name).includes(
+            searchNormalizeString(find),
+          )),
     )
-    .reduce(
-      (accumulator, shoe) => {
-        accumulator[shoe.type] = [...(accumulator[shoe.type] || []), shoe];
-
-        return accumulator;
-      },
-      {} as { [key: string]: ShoeProcessed[] },
+    .map((shoe) => ({
+      ...shoe,
+      score: adjustForTopValue(shoe.score),
+    }))
+    .sort(
+      (a, b) => (b.score || 0) - (a.score || 0) || a.name.localeCompare(b.name),
     );
-  const dataEntries = Object.entries(dataByType);
 
   const paretoUrl = "https://en.wikipedia.org/wiki/Pareto_front";
 
@@ -237,18 +219,35 @@ const Shoes = ({ data }: ShoesProps) => {
 
       <div className="my-8">
         <div className="my-4 flex overflow-x-scroll no-scrollbar">
-          {priceLabels.map((priceLabel) => (
+          {priceOptions.map((priceOption, index) => (
             <div
-              key={priceLabel}
-              id={priceLabel}
+              key={priceOption}
+              id={`${priceOption}`}
               onClick={() => {
-                setPrice(priceLabel);
+                setPrice(priceOption);
 
-                changeParams({ price: priceLabel });
+                changeParams({ price: priceOption });
               }}
-              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
-              {priceLabel}
+              {index === 0 ? "Under " : ""}${priceOption}
+            </div>
+          ))}
+        </div>
+
+        <div className="my-4 flex overflow-x-scroll no-scrollbar">
+          {typeOptions.map((typeOption) => (
+            <div
+              key={typeOption}
+              id={typeOption}
+              onClick={() => {
+                setType(typeOption);
+
+                changeParams({ type: typeOption });
+              }}
+              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${type === typeOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+            >
+              {capitalize(typeOption)}
             </div>
           ))}
         </div>
@@ -270,80 +269,55 @@ const Shoes = ({ data }: ShoesProps) => {
         </div>
       </div>
 
-      {dataEntries.map(([type, shoes], index) => {
-        const typeToScrollTo =
-          dataEntries[dataEntries.length === index + 1 ? 0 : index + 1][0];
+      {processedData.map((shoe, shoeIndex) => {
+        const value = shoe.score;
+
+        const surpassingShoes = processedData.filter(
+          (otherShoe) =>
+            otherShoe[energyKey] > shoe[energyKey] &&
+            otherShoe.weight < shoe.weight &&
+            otherShoe.price < shoe.price,
+        );
+        const surpassingShoe = surpassingShoes[0];
+
+        const width = value
+          ? (100 * (value - targetMinimumValue + minimumWidth)) /
+            (tagetMaximumValue - targetMinimumValue + minimumWidth)
+          : minimumWidth;
+
+        const backgroundColor = getValueRgb(value, valueColors);
 
         return (
-          <div key={type} id={type}>
-            <div className="my-8 flex justify-between">
-              <div className="text-sm font-semibold">{capitalize(type)}</div>
+          <div
+            key={shoeIndex}
+            id={`${shoe.id}`}
+            className={`my-4 ${surpassingShoe ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
+          >
+            <Link target="_blank" href={`https://runrepeat.com/${shoe.slug}`}>
+              <div className="text-sm font-semibold">
+                {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
+              </div>
 
-              <ScrollToButton id={typeToScrollTo}>
-                <div className="text-xs">
-                  jump to{" "}
-                  <span className="underline">
-                    {capitalize(typeToScrollTo)}
-                  </span>
-                </div>
-              </ScrollToButton>
-            </div>
+              <div
+                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
+                style={{
+                  width: `${width}%`,
+                  backgroundColor: `rgb(${backgroundColor.join(",")})`,
+                }}
+              >
+                {Math.floor(shoe.score)}
+              </div>
+            </Link>
 
-            {shoes.map((shoe, shoeIndex) => {
-              const value = shoe.score;
-
-              const surpassingShoes = shoes.filter(
-                (otherShoe) =>
-                  otherShoe[energyKey] > shoe[energyKey] &&
-                  otherShoe.weight < shoe.weight &&
-                  otherShoe.price < shoe.price,
-              );
-              const surpassingShoe = surpassingShoes[0];
-
-              const width = value
-                ? (100 * (value - targetMinimumValue + minimumWidth)) /
-                  (tagetMaximumValue - targetMinimumValue + minimumWidth)
-                : minimumWidth;
-
-              const backgroundColor = getValueRgb(value, valueColors);
-
-              return (
-                <div
-                  key={shoeIndex}
-                  id={`${shoe.id}`}
-                  className={`my-4 ${surpassingShoe ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
-                >
-                  <Link
-                    target="_blank"
-                    href={`https://runrepeat.com/${shoe.slug}`}
-                  >
-                    <div className="text-sm font-semibold">
-                      {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
-                    </div>
-
-                    <div
-                      className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
-                      style={{
-                        width: `${width}%`,
-                        backgroundColor: `rgb(${backgroundColor.join(",")})`,
-                      }}
-                    >
-                      {Math.floor(shoe.score)}
-                    </div>
-                  </Link>
-
-                  {!!surpassingShoe && (
-                    <div className="-mt-1">
-                      <ScrollToButton id={`${surpassingShoe.id}`}>
-                        <div className=" text-xs">
-                          {"<<"} {surpassingShoe.name}
-                        </div>
-                      </ScrollToButton>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {!!surpassingShoe && (
+              <div className="-mt-1">
+                <ScrollToButton id={`${surpassingShoe.id}`}>
+                  <div className=" text-xs">
+                    {"<<"} {surpassingShoe.name}
+                  </div>
+                </ScrollToButton>
+              </div>
+            )}
           </div>
         );
       })}
