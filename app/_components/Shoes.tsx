@@ -197,7 +197,7 @@ const Shoes = ({ data }: ShoesProps) => {
             <span className="italic">weight</span>
           </div>
 
-          <div className="my-1 border border-[rgb(42,43,44)] rounded-md p-2 bg-[rgb(25,26,27)] font-mono">
+          <div className="my-1 border border-[rgb(52,53,54)] rounded-md p-2 bg-[rgb(29,30,31)] font-mono">
             <div>energy_absorbed_forefoot</div>
 
             <div>* energy_return_rate_forefoot</div>
