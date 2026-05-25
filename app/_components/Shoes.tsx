@@ -38,12 +38,12 @@ const Shoes = ({ data }: ShoesProps) => {
   const initialMinimumValue = Math.min(...initialValues);
   const initialMaximumValue = Math.max(...initialValues);
   const targetMinimumValue = 1;
-  const tagetMaximumValue = 99;
+  const targetMaximumValue = 99;
   const adjustForBottomValue = (value: number) =>
     value - initialMinimumValue + targetMinimumValue;
   const adjustForTopValue = (value: number) =>
     (adjustForBottomValue(value) / adjustForBottomValue(initialMaximumValue)) *
-    tagetMaximumValue;
+    targetMaximumValue;
 
   const allOption = "all";
 
@@ -267,7 +267,7 @@ const Shoes = ({ data }: ShoesProps) => {
 
           const width = value
             ? (100 * (value - targetMinimumValue + minimumWidth)) /
-              (tagetMaximumValue - targetMinimumValue + minimumWidth)
+              (targetMaximumValue - targetMinimumValue + minimumWidth)
             : minimumWidth;
 
           const backgroundColor = getValueRgb(value, valueColors);
