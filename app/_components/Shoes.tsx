@@ -242,12 +242,13 @@ const Shoes = ({ data }: ShoesProps) => {
               <input
                 type="text"
                 value={find}
+                onFocus={() => {
+                  scrollIdIntoView("filters");
+                }}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   const nextFind = event.target.value;
 
                   setFind(nextFind);
-
-                  scrollIdIntoView("filters");
 
                   changeParams({ find: nextFind });
                 }}
