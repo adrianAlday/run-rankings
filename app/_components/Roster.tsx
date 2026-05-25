@@ -241,7 +241,7 @@ const Roster = ({ data }: RosterProps) => {
             {rangeLabels.map((rangeLabel, index) => (
               <Fragment key={rangeLabel}>
                 {[
-                  rangeLabels.findIndex((label) => label.includes("20")),
+                  rangeLabels.findIndex((label) => label.includes("2")),
                   rangeLabels.findIndex((label) => label.includes("era")),
                 ].includes(index) && <div className="basis-full" />}
 
