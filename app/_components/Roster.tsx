@@ -295,7 +295,9 @@ const Roster = ({ data }: RosterProps) => {
           const value = friend.time;
 
           const relativeValue =
-            (value - minimumValue || 1) / (maximumValue - minimumValue || 1);
+            minimumValue === maximumValue
+              ? 1
+              : (value - minimumValue) / (maximumValue - minimumValue);
 
           const backgroundColor = getValueRgb(index, valueColors);
 
