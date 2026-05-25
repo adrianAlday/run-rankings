@@ -77,10 +77,18 @@ const Shoes = ({ data }: ShoesProps) => {
     ) || priceLabels[0],
   );
 
+  const findParam = searchParams.get("find");
+
+  const [find, setFind] = useState(findParam || "");
+
   const idParam = searchParams.get("id");
 
-  const changePriceParam = (value: string) => {
-    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(withoutCurrencySymbol(value))}`;
+  const changeParams = (entries: { [key: string]: string }) => {
+    const nextPrice = entries.price || price;
+    const nextFind = entries.find || find;
+
+    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(withoutCurrencySymbol(nextPrice))}&find=${encodeParam(withoutCurrencySymbol(nextFind))}`;
+
     window.history.replaceState(
       { ...window.history.state, as: newUrl, url: newUrl },
       "",
@@ -103,7 +111,7 @@ const Shoes = ({ data }: ShoesProps) => {
       });
 
       if (!priceParam) {
-        changePriceParam(price);
+        changeParams({ price, find });
       }
     }, 700);
 
@@ -124,8 +132,15 @@ const Shoes = ({ data }: ShoesProps) => {
   const priceLimit = priceOptions.find(
     (priceOption) => priceOption[0] === price,
   )?.[1] as number;
+
+  const searchNormalizeString = (value: string) =>
+    value.toLowerCase().replace(/[^a-z0-9]/g, "");
+
   const filteredData = initialProcessedData.filter(
-    (shoe) => shoe.price <= priceLimit,
+    (shoe) =>
+      shoe.price <= priceLimit &&
+      (!find ||
+        searchNormalizeString(shoe.name).includes(searchNormalizeString(find))),
   );
 
   const processedData = filteredData.map((shoe) => ({
@@ -135,7 +150,10 @@ const Shoes = ({ data }: ShoesProps) => {
 
   const dataByType = processedData
     ?.sort(
-      (a, b) => (b.score || 0) - (a.score || 0) || a.name.localeCompare(b.name),
+      (a, b) =>
+        a.type.localeCompare(b.type) ||
+        (b.score || 0) - (a.score || 0) ||
+        a.name.localeCompare(b.name),
     )
     .reduce(
       (accumulator, shoe) => {
@@ -225,13 +243,29 @@ const Shoes = ({ data }: ShoesProps) => {
             onClick={() => {
               setPrice(priceLabel);
 
-              changePriceParam(priceLabel);
+              changeParams({ price: priceLabel });
             }}
             className={`${price === priceLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
           >
             {priceLabel}
           </div>
         ))}
+      </div>
+
+      <div className="my-8">
+        <input
+          type="text"
+          value={find}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            const nextFind = event.target.value;
+
+            setFind(nextFind);
+
+            changeParams({ find: nextFind });
+          }}
+          className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} rounded-md py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
+          placeholder="Find"
+        />
       </div>
 
       {dataEntries.map(([type, shoes], index) => {
