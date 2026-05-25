@@ -256,7 +256,7 @@ const Roster = ({ data }: RosterProps) => {
               <input
                 type="text"
                 value={find}
-                onFocus={() => {
+                onClick={() => {
                   scrollIdIntoView("filters");
                 }}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
