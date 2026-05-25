@@ -11,9 +11,9 @@ const Layout = ({ children }: Readonly<LayoutProps>) => {
     <html lang="en" className={"antialiased"}>
       <body>
         <div className="flex justify-center">
-          <div className="w-[375px]">
+          <div className="w-[375px] p-4">
             <Link href={"/"}>
-              <div className="text-sm font-semibold my-8">🥇 Run Rankings</div>
+              <div className="text-sm font-semibold my-4">🥇 Run Rankings</div>
             </Link>
 
             {children}
