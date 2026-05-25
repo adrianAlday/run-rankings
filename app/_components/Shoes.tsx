@@ -235,37 +235,39 @@ const Shoes = ({ data }: ShoesProps) => {
         </div>
       </div>
 
-      <div className="my-8 flex overflow-x-scroll no-scrollbar">
-        {priceLabels.map((priceLabel) => (
-          <div
-            key={priceLabel}
-            id={priceLabel}
-            onClick={() => {
-              setPrice(priceLabel);
-
-              changeParams({ price: priceLabel });
-            }}
-            className={`${price === priceLabel ? "bg-[rgb(65,121,157)] text-[rgb(253,254,255)]" : ""} mr-2 border border-[rgb(42,43,44)] rounded-md py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-          >
-            {priceLabel}
-          </div>
-        ))}
-      </div>
-
       <div className="my-8">
-        <input
-          type="text"
-          value={find}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            const nextFind = event.target.value;
+        <div className="my-4 flex overflow-x-scroll no-scrollbar">
+          {priceLabels.map((priceLabel) => (
+            <div
+              key={priceLabel}
+              id={priceLabel}
+              onClick={() => {
+                setPrice(priceLabel);
 
-            setFind(nextFind);
+                changeParams({ price: priceLabel });
+              }}
+              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+            >
+              {priceLabel}
+            </div>
+          ))}
+        </div>
 
-            changeParams({ find: nextFind });
-          }}
-          className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} rounded-md py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
-          placeholder="Find"
-        />
+        <div className="my-4">
+          <input
+            type="text"
+            value={find}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              const nextFind = event.target.value;
+
+              setFind(nextFind);
+
+              changeParams({ find: nextFind });
+            }}
+            className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
+            placeholder="Find"
+          />
+        </div>
       </div>
 
       {dataEntries.map(([type, shoes], index) => {
