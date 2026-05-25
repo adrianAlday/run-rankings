@@ -110,7 +110,7 @@ const Roster = ({ data }: RosterProps) => {
   )?.[1] as DateTime<true>[];
 
   const maxDisplayCount = 50;
-  const allFriends = filteredData
+  const matchingFriends = filteredData
     .map(({ id, name, groupings }) => {
       const time = groupings.reduce((accumulator, grouping) => {
         const { start_date, moving_time } = grouping.activities;
@@ -134,10 +134,10 @@ const Roster = ({ data }: RosterProps) => {
           )),
     );
 
-  const friends = allFriends.slice(0, maxDisplayCount);
-  const extraFriends = allFriends.length - friends.length;
+  const shownFriends = matchingFriends.slice(0, maxDisplayCount);
+  const extraFriends = matchingFriends.length - shownFriends.length;
 
-  const values = friends.map((friend) => friend.time);
+  const values = shownFriends.map((friend) => friend.time);
   const minimumValue = Math.min(...values);
   const maximumValue = Math.max(...values);
   const maxWidth = 320;
@@ -271,7 +271,7 @@ const Roster = ({ data }: RosterProps) => {
         </div>
       </div>
 
-      {friends.map((friend, index) => {
+      {shownFriends.map((friend, index) => {
         const value = friend.time;
 
         const width =
@@ -315,7 +315,7 @@ const Roster = ({ data }: RosterProps) => {
         </div>
       )}
 
-      {!friends.length && (
+      {!shownFriends.length && (
         <div className="my-4 text-sm font-semibold">
           {":("} in{" "}
           {range === goatOption
