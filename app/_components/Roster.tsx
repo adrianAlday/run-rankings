@@ -10,6 +10,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
 import BuiltBy from "./BuiltBy";
 import { normalizeStringForFind } from "../_utils/strings";
+import { scrollIdIntoView } from "../_utils/scroll";
 
 type RosterProps = {
   data: FriendRow[];
@@ -234,14 +235,15 @@ const Roster = ({ data }: RosterProps) => {
         </div>
       </div>
 
-      <div className="my-8">
+      <div id="filters" className="my-8">
         <div className="my-4 flex flex-wrap">
           {rangeLabels.map((rangeLabel) => (
             <div
               key={rangeLabel}
-              id={rangeLabel}
               onClick={() => {
                 setRange(rangeLabel);
+
+                scrollIdIntoView("filters");
 
                 changeParams({ range: rangeLabel });
               }}
@@ -263,6 +265,8 @@ const Roster = ({ data }: RosterProps) => {
 
               setRange(goatOption);
 
+              scrollIdIntoView("filters");
+
               changeParams({ range: goatOption, find: nextFind });
             }}
             className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
@@ -270,61 +274,64 @@ const Roster = ({ data }: RosterProps) => {
           />
         </div>
       </div>
+      <div className="min-h-screen">
+        {shownFriends.map((friend, index) => {
+          const value = friend.time;
 
-      {shownFriends.map((friend, index) => {
-        const value = friend.time;
+          const width =
+            (100 *
+              (((maxWidth - minimumWidth) / maxWidth) *
+                (value - minimumValue))) /
+            (maximumValue - minimumValue);
 
-        const width =
-          (100 *
-            (((maxWidth - minimumWidth) / maxWidth) * (value - minimumValue))) /
-          (maximumValue - minimumValue);
+          const backgroundColor = getValueRgb(index, valueColors);
 
-        const backgroundColor = getValueRgb(index, valueColors);
+          const hours = Math.ceil(friend.time / 60 / 60);
 
-        const hours = Math.ceil(friend.time / 60 / 60);
-
-        return (
-          <div key={index} className={"my-4"}>
-            <Link
-              target="_blank"
-              href={`https://www.strava.com/athletes/${friend.id}`}
-            >
-              <div className="text-sm font-semibold">
-                <span className={"opacity-50"}>{index + 1}</span> {friend.name}
-                {`${friend.id}` === idParam ? " 🎉🎉🎉" : ""}
-              </div>
-
-              <div
-                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
-                style={{
-                  width: `calc(${minimumWidth}px + ${width}%)`,
-                  backgroundColor: `rgb(${backgroundColor.join(",")})`,
-                }}
+          return (
+            <div key={index} className={"my-4"}>
+              <Link
+                target="_blank"
+                href={`https://www.strava.com/athletes/${friend.id}`}
               >
-                {hours}
-                {index === 0 ? ` hour${hours !== 1 ? "s" : ""}` : ""}
-              </div>
-            </Link>
+                <div className="text-sm font-semibold">
+                  <span className={"opacity-50"}>{index + 1}</span>{" "}
+                  {friend.name}
+                  {`${friend.id}` === idParam ? " 🎉🎉🎉" : ""}
+                </div>
+
+                <div
+                  className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
+                  style={{
+                    width: `calc(${minimumWidth}px + ${width}%)`,
+                    backgroundColor: `rgb(${backgroundColor.join(",")})`,
+                  }}
+                >
+                  {hours}
+                  {index === 0 ? ` hour${hours !== 1 ? "s" : ""}` : ""}
+                </div>
+              </Link>
+            </div>
+          );
+        })}
+
+        {!!extraFriends && (
+          <div className="my-4 text-sm font-semibold">
+            and {extraFriends.toLocaleString("en-US")} more...
           </div>
-        );
-      })}
+        )}
 
-      {!!extraFriends && (
-        <div className="my-4 text-sm font-semibold">
-          and {extraFriends.toLocaleString("en-US")} more...
-        </div>
-      )}
+        {!shownFriends.length && (
+          <div className="my-4 text-sm font-semibold">
+            {":("} in{" "}
+            {range === goatOption
+              ? "the history of the universe"
+              : `${range.includes("era") ? "the " : ""}${range}`}
+          </div>
+        )}
 
-      {!shownFriends.length && (
-        <div className="my-4 text-sm font-semibold">
-          {":("} in{" "}
-          {range === goatOption
-            ? "the history of the universe"
-            : `${range.includes("era") ? "the " : ""}${range}`}
-        </div>
-      )}
-
-      <BuiltBy />
+        <BuiltBy />
+      </div>
     </div>
   );
 };

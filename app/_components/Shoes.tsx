@@ -10,6 +10,7 @@ import BuiltBy from "./BuiltBy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
 import { capitalize, normalizeStringForFind } from "../_utils/strings";
+import { scrollIdIntoView } from "../_utils/scroll";
 
 type ShoesProps = {
   data: ShoeRow[];
@@ -190,7 +191,7 @@ const Shoes = ({ data }: ShoesProps) => {
         </div>
       </div>
 
-      <div className="my-8">
+      <div id="filters" className="my-8">
         <div className="my-2 flex flex-wrap">
           {priceOptions.map((priceOption, index) => (
             <div
@@ -198,6 +199,8 @@ const Shoes = ({ data }: ShoesProps) => {
               id={`${priceOption}`}
               onClick={() => {
                 setPrice(priceOption);
+
+                scrollIdIntoView("filters");
 
                 changeParams({ price: priceOption });
               }}
@@ -218,6 +221,8 @@ const Shoes = ({ data }: ShoesProps) => {
               onClick={() => {
                 setType(typeOption);
 
+                scrollIdIntoView("filters");
+
                 changeParams({ type: typeOption });
               }}
               className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${type === typeOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
@@ -236,6 +241,8 @@ const Shoes = ({ data }: ShoesProps) => {
 
               setFind(nextFind);
 
+              scrollIdIntoView("filters");
+
               changeParams({ find: nextFind });
             }}
             className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
@@ -244,60 +251,62 @@ const Shoes = ({ data }: ShoesProps) => {
         </div>
       </div>
 
-      {processedData.map((shoe, shoeIndex) => {
-        const value = shoe.score;
+      <div className="min-h-screen">
+        {processedData.map((shoe, shoeIndex) => {
+          const value = shoe.score;
 
-        const surpassingShoes = processedData.filter(
-          (otherShoe) =>
-            otherShoe[energyKey] > shoe[energyKey] &&
-            otherShoe.weight < shoe.weight &&
-            otherShoe.price < shoe.price,
-        );
-        const surpassingShoe = surpassingShoes[0];
+          const surpassingShoes = processedData.filter(
+            (otherShoe) =>
+              otherShoe[energyKey] > shoe[energyKey] &&
+              otherShoe.weight < shoe.weight &&
+              otherShoe.price < shoe.price,
+          );
+          const surpassingShoe = surpassingShoes[0];
 
-        const width = value
-          ? (100 * (value - targetMinimumValue + minimumWidth)) /
-            (tagetMaximumValue - targetMinimumValue + minimumWidth)
-          : minimumWidth;
+          const width = value
+            ? (100 * (value - targetMinimumValue + minimumWidth)) /
+              (tagetMaximumValue - targetMinimumValue + minimumWidth)
+            : minimumWidth;
 
-        const backgroundColor = getValueRgb(value, valueColors);
+          const backgroundColor = getValueRgb(value, valueColors);
 
-        return (
-          <div
-            key={shoeIndex}
-            id={`${shoe.id}`}
-            className={`my-4 ${surpassingShoe ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
-          >
-            <Link target="_blank" href={`https://runrepeat.com/${shoe.slug}`}>
-              <div className="text-sm font-semibold">
-                {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
-              </div>
+          return (
+            <div
+              key={shoeIndex}
+              id={`${shoe.id}`}
+              className={`my-4 ${surpassingShoe ? "opacity-25" : "opacity-100"} transition-all duration-700 transition-discrete`}
+            >
+              <Link target="_blank" href={`https://runrepeat.com/${shoe.slug}`}>
+                <div className="text-sm font-semibold">
+                  {shoe.name} {`${shoe.id}` === idParam ? " 🎉🎉🎉" : ""}
+                </div>
 
-              <div
-                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
-                style={{
-                  width: `${width}%`,
-                  backgroundColor: `rgb(${backgroundColor.join(",")})`,
-                }}
-              >
-                {Math.floor(shoe.score)}
-              </div>
-            </Link>
+                <div
+                  className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
+                  style={{
+                    width: `${width}%`,
+                    backgroundColor: `rgb(${backgroundColor.join(",")})`,
+                  }}
+                >
+                  {Math.floor(shoe.score)}
+                </div>
+              </Link>
 
-            {!!surpassingShoe && (
-              <div className="-mt-1">
-                <ScrollToButton id={`${surpassingShoe.id}`}>
-                  <div className=" text-xs">
-                    {"<<"} {surpassingShoe.name}
-                  </div>
-                </ScrollToButton>
-              </div>
-            )}
-          </div>
-        );
-      })}
+              {!!surpassingShoe && (
+                <div className="-mt-1">
+                  <ScrollToButton id={`${surpassingShoe.id}`}>
+                    <div className=" text-xs">
+                      {"<<"} {surpassingShoe.name}
+                    </div>
+                  </ScrollToButton>
+                </div>
+              )}
+            </div>
+          );
+        })}
 
-      <BuiltBy />
+        <BuiltBy />
+      </div>
     </div>
   );
 };
