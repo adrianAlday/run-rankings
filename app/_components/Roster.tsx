@@ -256,15 +256,14 @@ const Roster = ({ data }: RosterProps) => {
               <input
                 type="text"
                 value={find}
-                onFocus={() => {
-                  setTimeout(() => scrollIdIntoView("filters"), 50);
-                }}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   const nextFind = event.target.value;
 
                   setFind(nextFind);
 
                   setRange(goatOption);
+
+                  scrollIdIntoView("filters");
 
                   changeParams({ range: goatOption, find: nextFind });
                 }}

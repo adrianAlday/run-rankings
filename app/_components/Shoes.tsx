@@ -242,9 +242,6 @@ const Shoes = ({ data }: ShoesProps) => {
               <input
                 type="text"
                 value={find}
-                onFocus={() => {
-                  setTimeout(() => scrollIdIntoView("filters"), 50);
-                }}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   const nextFind = event.target.value;
 
@@ -261,6 +258,8 @@ const Shoes = ({ data }: ShoesProps) => {
                   className="absolute text-xl right-2 top-1/2 -translate-y-1/2 hover:text-[rgb(74,119,145)]"
                   onClick={() => {
                     setFind(initialFind);
+
+                    scrollIdIntoView("filters");
 
                     changeParams({ find: initialFind });
                   }}
