@@ -37,47 +37,31 @@ const Roster = ({ data }: RosterProps) => {
     )
     .sort();
   const earliestActivity = DateTime.fromISO(starts.at(0) as string);
-  const latestActivity = DateTime.fromISO(starts.at(-1) as string);
 
   const goatOption = "Goat";
-  const yearsArray = Array.from(
-    { length: latestActivity.year - earliestActivity.year + 1 },
-    (_undefined, index) => latestActivity.year - index,
+  const lastCompletedYear = now.year - 1;
+  const completedYearsArray = Array.from(
+    { length: lastCompletedYear - earliestActivity.year + 1 },
+    (_undefined, index) => lastCompletedYear - index,
   );
+  const generateYearDates = (startYear: number, endYear = startYear) => [
+    DateTime.fromISO(`${startYear}-01-01`).startOf("day"),
+    DateTime.fromISO(`${endYear}-12-31`).endOf("day"),
+  ];
   const rangeOptions = [
     ["90 days", [now.plus({ days: -90 }).startOf("day"), now.endOf("day")]],
-    [
-      goatOption,
-      [earliestActivity.startOf("day"), latestActivity.endOf("day")],
-    ],
-    ...yearsArray.map((year) => [
-      `${year}`,
-      [
-        DateTime.fromISO(`${year}-01-01`).startOf("day"),
-        DateTime.fromISO(`${year}-12-31`).endOf("day"),
-      ],
-    ]),
-    [
-      "Bike era",
-      [
-        DateTime.fromISO(`1920-01-01`).startOf("day"),
-        DateTime.fromISO(`2020-12-31`).endOf("day"),
-      ],
-    ],
-    [
-      "Run era",
-      [
-        DateTime.fromISO(`2021-01-01`).startOf("day"),
-        DateTime.fromISO(`2121-12-31`).endOf("day"),
-      ],
-    ],
+    ["Year-to-date", generateYearDates(now.year)],
+    [goatOption, [earliestActivity.startOf("day"), now.endOf("day")]],
+    ...completedYearsArray.map((year) => [`${year}`, generateYearDates(year)]),
+    ["Run era", generateYearDates(2021, 2021 + 1000)],
+    ["Bike era", generateYearDates(2020 - 1000, 2020)],
   ];
   const rangeLabels = rangeOptions.map(
     (rangeOption) => rangeOption[0],
   ) as string[];
 
   const rangeIndexesForRowStart = [
-    rangeLabels.findIndex((label) => label === `${yearsArray[0]}`),
+    rangeLabels.findIndex((label) => label === `${completedYearsArray[0]}`),
     rangeLabels.findIndex((label) => label.includes("era")),
   ];
 
@@ -259,6 +243,7 @@ const Roster = ({ data }: RosterProps) => {
                   }}
                   className={`mr-2 my-1 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
                 >
+                  {rangeLabel === "2020" ? "🦠 " : ""}
                   {rangeLabel}
                 </div>
               </Fragment>
@@ -335,7 +320,7 @@ const Roster = ({ data }: RosterProps) => {
 
         {!shownFriends.length && (
           <div className="my-4 text-sm font-semibold">
-            No {find} in{" "}
+            No{find ? "" : "thing"} {find} in{" "}
             {range === goatOption
               ? "the history of the universe"
               : `${range.includes("era") ? "the " : ""}${range}`}{" "}
