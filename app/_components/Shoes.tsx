@@ -133,7 +133,7 @@ const Shoes = ({ data }: ShoesProps) => {
     .sort()
     .at(-1) as string;
 
-  const minimumWidth = 5;
+  const minimumWidth = 24;
 
   const valueColors: ValueColors = [
     [20, [239, 130, 119]], // red
@@ -257,6 +257,10 @@ const Shoes = ({ data }: ShoesProps) => {
         {processedData.map((shoe, shoeIndex) => {
           const value = shoe.score;
 
+          const relativeValue =
+            (value - targetMinimumValue) /
+            (targetMaximumValue - targetMinimumValue);
+
           const surpassingShoes = processedData.filter(
             (otherShoe) =>
               otherShoe[energyKey] > shoe[energyKey] &&
@@ -264,11 +268,6 @@ const Shoes = ({ data }: ShoesProps) => {
               otherShoe.price < shoe.price,
           );
           const surpassingShoe = surpassingShoes[0];
-
-          const width = value
-            ? (100 * (value - targetMinimumValue + minimumWidth)) /
-              (targetMaximumValue - targetMinimumValue + minimumWidth)
-            : minimumWidth;
 
           const backgroundColor = getValueRgb(value, valueColors);
 
@@ -286,7 +285,7 @@ const Shoes = ({ data }: ShoesProps) => {
                 <div
                   className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
                   style={{
-                    width: `${width}%`,
+                    width: `calc( ( 100% - ${minimumWidth}px ) * ${relativeValue} + ${minimumWidth}px )`,
                     backgroundColor: `rgb(${backgroundColor.join(",")})`,
                   }}
                 >
