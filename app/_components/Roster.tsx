@@ -2,7 +2,7 @@
 
 import { DateTime } from "luxon";
 import { FriendRow } from "../friends/page";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
@@ -32,14 +32,18 @@ const Roster = ({ data }: RosterProps) => {
   const earliestActivity = DateTime.fromISO(starts.at(0) as string);
   const latestActivity = DateTime.fromISO(starts.at(-1) as string);
 
+  const goatOption = "Goat";
   const yearsArray = Array.from(
     { length: latestActivity.year - earliestActivity.year + 1 },
     (_undefined, index) => latestActivity.year - index,
   );
   const rangeOptions = [
     ["90 days", [now.plus({ days: -90 }).startOf("day"), now.endOf("day")]],
-    ["Goat", [earliestActivity.startOf("day"), latestActivity.endOf("day")]],
-    ...yearsArray.map((year) => [
+    [
+      goatOption,
+      [earliestActivity.startOf("day"), latestActivity.endOf("day")],
+    ],
+    ...yearsArray.map((year, index) => [
       `${year}`,
       [
         DateTime.fromISO(`${year}-01-01`).startOf("day"),
@@ -68,6 +72,10 @@ const Roster = ({ data }: RosterProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const findParam = searchParams.get("find");
+
+  const [find, setFind] = useState(findParam || "");
+
   const rangeParam = searchParams.get("range");
 
   const [range, setRange] = useState(
@@ -78,8 +86,12 @@ const Roster = ({ data }: RosterProps) => {
 
   const idParam = searchParams.get("id");
 
-  const changeRangeParam = (value: string) => {
-    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}range=${encodeParam(value)}`;
+  const changeParams = (entries: { [key: string]: string | number }) => {
+    const nextFind = Object.hasOwn(entries, "find") ? entries.find : find;
+    const nextRange = Object.hasOwn(entries, "range") ? entries.range : range;
+
+    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}find=${encodeParam(nextFind)}&range=${encodeParam(nextRange)}`;
+
     window.history.replaceState(
       { ...window.history.state, as: newUrl, url: newUrl },
       "",
@@ -87,31 +99,12 @@ const Roster = ({ data }: RosterProps) => {
     );
   };
 
-  useEffect(() => {
-    document.getElementById(rangeLabels.at(-1) as string)?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "start",
-    });
-
-    const timer = setTimeout(() => {
-      document.getElementById(range)?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "start",
-      });
-
-      if (!rangeParam) {
-        changeRangeParam(range);
-      }
-    }, 700);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const [startDate, endDate] = rangeOptions.find(
     (rangeOption) => rangeOption[0] === range,
   )?.[1] as DateTime<true>[];
+
+  const searchNormalizeString = (value: string) =>
+    value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
   const idDenylist = (process.env.NEXT_PUBLIC_STRAVA_ID_DENYLIST || "")
     .split(", ")
@@ -132,11 +125,17 @@ const Roster = ({ data }: RosterProps) => {
       return { id, name, time };
     })
     .sort((a, b) => b.time - a.time || a.name.localeCompare(b.name))
-    .filter(({ time }) => time > 0);
+    .filter(
+      (friend) =>
+        !idDenylist.includes(friend.id) &&
+        friend.time > 0 &&
+        (!find ||
+          searchNormalizeString(friend.name).includes(
+            searchNormalizeString(find),
+          )),
+    );
 
-  const friends = allFriends
-    .filter(({ id }) => !idDenylist.includes(id))
-    .slice(0, maxDisplayCount);
+  const friends = allFriends.slice(0, maxDisplayCount);
   const extraFriends = allFriends.length - friends.length;
 
   const values = friends.map((friend) => friend.time);
@@ -237,7 +236,7 @@ const Roster = ({ data }: RosterProps) => {
       </div>
 
       <div className="my-8">
-        <div className="my-4 flex overflow-x-scroll no-scrollbar">
+        <div className="my-4 flex flex-wrap">
           {rangeLabels.map((rangeLabel) => (
             <div
               key={rangeLabel}
@@ -245,13 +244,31 @@ const Roster = ({ data }: RosterProps) => {
               onClick={() => {
                 setRange(rangeLabel);
 
-                changeRangeParam(rangeLabel);
+                changeParams({ range: rangeLabel });
               }}
-              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+              className={`mr-2 my-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${range === rangeLabel ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
               {rangeLabel}
             </div>
           ))}
+        </div>
+
+        <div className="my-4">
+          <input
+            type="text"
+            value={find}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              const nextFind = event.target.value;
+
+              setFind(nextFind);
+
+              setRange(goatOption);
+
+              changeParams({ range: goatOption, find: nextFind });
+            }}
+            className={`border border-[rgb(52,53,54)] focus:border-[rgb(74,119,145)] rounded-md w-full ${find ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 text-xs font-medium transition-all duration-700 transition-discrete`}
+            placeholder="Find"
+          />
         </div>
       </div>
 
@@ -286,7 +303,7 @@ const Roster = ({ data }: RosterProps) => {
                 }}
               >
                 {hours}
-                {index === 0 ? ` hour${hours !== 0 ? "s" : ""}` : ""}
+                {index === 0 ? ` hour${hours !== 1 ? "s" : ""}` : ""}
               </div>
             </Link>
           </div>
@@ -296,6 +313,15 @@ const Roster = ({ data }: RosterProps) => {
       {!!extraFriends && (
         <div className="my-4 text-sm font-semibold">
           and {extraFriends.toLocaleString("en-US")} more...
+        </div>
+      )}
+
+      {!friends.length && (
+        <div className="my-4 text-sm font-semibold">
+          {":("} in{" "}
+          {range === goatOption
+            ? "the history of the universe"
+            : `${range.includes("era") ? "the " : ""}${range}`}
         </div>
       )}
 

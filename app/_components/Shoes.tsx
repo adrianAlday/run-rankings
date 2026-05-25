@@ -5,7 +5,7 @@ import { ShoeRow } from "../shoes/page";
 import Link from "next/link";
 import LastUpdated from "./LastUpdated";
 import ScrollToButton from "./ScrollToButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BuiltBy from "./BuiltBy";
 import { usePathname, useSearchParams } from "next/navigation";
 import { encodeParam } from "../_utils/url";
@@ -91,9 +91,9 @@ const Shoes = ({ data }: ShoesProps) => {
   const idParam = searchParams.get("id");
 
   const changeParams = (entries: { [key: string]: string | number }) => {
-    const nextPrice = entries.price || price;
-    const nextType = entries.type || type;
-    const nextFind = entries.find || find;
+    const nextPrice = Object.hasOwn(entries, "price") ? entries.price : price;
+    const nextType = Object.hasOwn(entries, "type") ? entries.type : type;
+    const nextFind = Object.hasOwn(entries, "find") ? entries.find : find;
 
     const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(nextPrice)}&type=${encodeParam(nextType)}&find=${encodeParam(nextFind)}`;
 
@@ -103,29 +103,6 @@ const Shoes = ({ data }: ShoesProps) => {
       newUrl,
     );
   };
-
-  const scrollIdIntoView = (id: string | number | undefined) =>
-    document.getElementById(`${id}`)?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "start",
-    });
-
-  useEffect(() => {
-    scrollIdIntoView(priceOptions.at(-1));
-    scrollIdIntoView(typeOptions.at(-1));
-
-    const timer = setTimeout(() => {
-      scrollIdIntoView(price);
-      scrollIdIntoView(type);
-
-      if (!priceParam) {
-        changeParams({ price, type, find });
-      }
-    }, 700);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const searchNormalizeString = (value: string) =>
     value.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -219,7 +196,7 @@ const Shoes = ({ data }: ShoesProps) => {
       </div>
 
       <div className="my-8">
-        <div className="my-4 flex overflow-x-scroll no-scrollbar">
+        <div className="my-4 flex flex-wrap">
           {priceOptions.map((priceOption, index) => (
             <div
               key={priceOption}
@@ -229,7 +206,7 @@ const Shoes = ({ data }: ShoesProps) => {
 
                 changeParams({ price: priceOption });
               }}
-              className={`mr-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+              className={`mr-2 my-2 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${price === priceOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
             >
               {index === priceOptions.length - 1
                 ? capitalize(allOption)
