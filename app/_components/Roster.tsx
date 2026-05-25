@@ -256,8 +256,8 @@ const Roster = ({ data }: RosterProps) => {
               <input
                 type="text"
                 value={find}
-                onClick={() => {
-                  scrollIdIntoView("filters");
+                onFocus={() => {
+                  setTimeout(() => scrollIdIntoView("filters"), 50);
                 }}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   const nextFind = event.target.value;
