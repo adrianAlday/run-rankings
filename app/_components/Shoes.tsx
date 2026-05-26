@@ -128,8 +128,6 @@ const Shoes = ({ data }: ShoesProps) => {
       (a, b) => (b.score || 0) - (a.score || 0) || a.name.localeCompare(b.name),
     );
 
-  const paretoUrl = "https://en.wikipedia.org/wiki/Pareto_front";
-
   const lastUpdated = processedData
     .map((shoe) => shoe.updated_at)
     .sort()
@@ -150,8 +148,7 @@ const Shoes = ({ data }: ShoesProps) => {
       <div className="my-8 text-xs">
         <div className="my-4">
           <div className="my-1">
-            Relative ratings of the energy{" "}
-            <span className="italic">absorbed</span> then{" "}
+            Ratings of the energy <span className="italic">absorbed</span> then{" "}
             <span className="italic">returned</span> in{" "}
             <span className="italic">cold</span> conditions with a penalty for{" "}
             <span className="italic">weight</span>
@@ -169,14 +166,19 @@ const Shoes = ({ data }: ShoesProps) => {
         </div>
 
         <div className="my-4">
-          <Link target="_blank" href={paretoUrl}>
-            <div>
-              <div className="my-1">
-                Grayed out if some other shoe is bouncier, lighter, and
-                currently cheaper
-              </div>
+          Ratings are dimensionless and relative, scaled to be between 1 and 99
+        </div>
 
-              <div className="my-1 underline">{paretoUrl}</div>
+        <div className="my-4">
+          <Link
+            target="_blank"
+            href={
+              "https://codemonk.io/blog/a-gentle-introduction-to-multi-objective-optimization/#pareto-approach"
+            }
+          >
+            <div>
+              Grayed out if <span className="underline">Pareto-dominated</span>{" "}
+              i.e. some other shoe is bouncier and lighter and currently cheaper
             </div>
           </Link>
         </div>
@@ -309,7 +311,7 @@ const Shoes = ({ data }: ShoesProps) => {
                     backgroundColor: `rgb(${backgroundColor.join(",")})`,
                   }}
                 >
-                  {Math.floor(shoe.score)}
+                  {Math.ceil(shoe.score)}
                 </div>
               </Link>
 
