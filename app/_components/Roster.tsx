@@ -294,10 +294,7 @@ const Roster = ({ data }: RosterProps) => {
         {shownFriends.map((friend, index) => {
           const value = friend.time;
 
-          const relativeValue =
-            minimumValue === maximumValue
-              ? 1
-              : (value - minimumValue) / (maximumValue - minimumValue);
+          const relativeValue = value / maximumValue;
 
           const backgroundColor = getValueRgb(index, valueColors);
 
