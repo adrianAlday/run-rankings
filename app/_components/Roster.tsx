@@ -130,7 +130,6 @@ const Roster = ({ data }: RosterProps) => {
   const extraFriends = matchingFriends.length - shownFriends.length;
 
   const values = shownFriends.map((friend) => friend.time);
-  const minimumValue = Math.min(...values);
   const maximumValue = Math.max(...values);
   const minimumWidth = 24;
   const valueColors: ValueColors = [
