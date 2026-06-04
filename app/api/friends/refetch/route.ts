@@ -93,14 +93,6 @@ export const GET = async (request: Request) => {
     }
   }
 
-  // const hostHeader = request.headers.get("host");
-
-  // await axios
-  //   .get(`http://${hostHeader}/api/friends/get-groupings`, {
-  //     headers: { authorization: `Bearer ${cronSecret}` },
-  //   })
-  //   .then((response) => response);
-
   await getGroupings();
 
   return NextResponse.json({});
