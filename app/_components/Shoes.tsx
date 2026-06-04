@@ -8,7 +8,7 @@ import ScrollToButton from "./ScrollToButton";
 import { useState } from "react";
 import BuiltBy from "./BuiltBy";
 import { usePathname, useSearchParams } from "next/navigation";
-import { encodeParam } from "../_utils/url";
+import { generateQueryString, replaceUrl } from "../_utils/url";
 import { capitalize, normalizeStringForFind } from "../_utils/strings";
 import { scrollIdIntoView } from "../_utils/scroll";
 
@@ -96,17 +96,15 @@ const Shoes = ({ data }: ShoesProps) => {
 
   const idParam = searchParams.get("id");
 
-  const changeParams = (entries: { [key: string]: string | number }) => {
-    const nextPrice = Object.hasOwn(entries, "price") ? entries.price : price;
-    const nextType = Object.hasOwn(entries, "type") ? entries.type : type;
-    const nextFind = Object.hasOwn(entries, "find") ? entries.find : find;
+  const changeParams = (newParams: { [key: string]: string | number }) => {
+    const originalParams = [
+      { key: "price", value: price },
+      { key: "type", value: type },
+      { key: "find", value: find },
+    ];
 
-    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}price=${encodeParam(nextPrice)}&type=${encodeParam(nextType)}&find=${encodeParam(nextFind)}`;
-
-    window.history.replaceState(
-      { ...window.history.state, as: newUrl, url: newUrl },
-      "",
-      newUrl,
+    replaceUrl(
+      `${pathname}?${idParam ? `id=${idParam}&` : ""}${generateQueryString(originalParams, newParams)}`,
     );
   };
 

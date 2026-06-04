@@ -7,7 +7,7 @@ import Link from "next/link";
 import { getValueRgb, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
 import { usePathname, useSearchParams } from "next/navigation";
-import { encodeParam } from "../_utils/url";
+import { generateQueryString, replaceUrl } from "../_utils/url";
 import BuiltBy from "./BuiltBy";
 import { normalizeStringForFind } from "../_utils/strings";
 import { scrollIdIntoView } from "../_utils/scroll";
@@ -85,16 +85,14 @@ const Roster = ({ data }: RosterProps) => {
 
   const idParam = searchParams.get("id");
 
-  const changeParams = (entries: { [key: string]: string | number }) => {
-    const nextFind = Object.hasOwn(entries, "find") ? entries.find : find;
-    const nextRange = Object.hasOwn(entries, "range") ? entries.range : range;
+  const changeParams = (newParams: { [key: string]: string | number }) => {
+    const originalParams = [
+      { key: "range", value: range },
+      { key: "find", value: find },
+    ];
 
-    const newUrl = `${pathname}?${idParam ? `id=${idParam}&` : ""}find=${encodeParam(nextFind)}&range=${encodeParam(nextRange)}`;
-
-    window.history.replaceState(
-      { ...window.history.state, as: newUrl, url: newUrl },
-      "",
-      newUrl,
+    replaceUrl(
+      `${pathname}?${idParam ? `id=${idParam}&` : ""}${generateQueryString(originalParams, newParams)}`,
     );
   };
 
