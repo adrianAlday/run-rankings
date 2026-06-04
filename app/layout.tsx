@@ -1,6 +1,7 @@
 import "./globals.css";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/next";
+import AboutPageLogger from "./_components/AboutPageLogger";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -17,6 +18,8 @@ const Layout = ({ children }: Readonly<LayoutProps>) => {
             </Link>
 
             {children}
+
+            <AboutPageLogger />
 
             <Analytics />
           </div>

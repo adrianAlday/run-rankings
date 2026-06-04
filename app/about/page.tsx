@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Roster - About ",
@@ -6,9 +7,19 @@ export const metadata: Metadata = {
 
 const AboutPage = () => {
   return (
-    <div className="text-xs">
-      <div>- PostgreSQL</div>
-      <div>- Next.js</div>
+    <div className="my-8 flex flex-col gap-4 text-xs">
+      <div>PostgreSQL with Supabase</div>
+
+      <div>Next.js with Vercel</div>
+
+      <div>Strava and RunRepeat APIs</div>
+
+      <Link
+        target="_blank"
+        href={"https://github.com/adrianAlday/run-rankings"}
+      >
+        <div className="underline">Repo</div>
+      </Link>
     </div>
   );
 };
