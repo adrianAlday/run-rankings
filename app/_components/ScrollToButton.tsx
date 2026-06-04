@@ -1,23 +1,20 @@
 "use client";
 
-const scrollToId = (id: string) => {
-  document
-    .getElementById(id)
-    ?.scrollIntoView({ behavior: "smooth", block: "start" });
-};
+import { scrollIdIntoView } from "../_utils/scroll";
 
 type ScrollToButtonProps = {
   id: string;
+  classNames?: string;
   children: React.ReactNode;
 };
 
-const ScrollToButton = ({ id, children }: ScrollToButtonProps) => {
+const ScrollToButton = ({ id, classNames, children }: ScrollToButtonProps) => {
   return (
     <button
       onClick={() => {
-        scrollToId(id);
+        scrollIdIntoView(id);
       }}
-      className="cursor-pointer"
+      className={`cursor-pointer ${classNames}`}
     >
       {children}
     </button>

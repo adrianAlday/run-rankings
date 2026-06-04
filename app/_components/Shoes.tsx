@@ -133,6 +133,8 @@ const Shoes = ({ data }: ShoesProps) => {
     .sort()
     .at(-1) as string;
 
+  const filtersId = "filters";
+
   const minimumWidth = 24;
 
   const valueColors: ValueColors = [
@@ -199,7 +201,7 @@ const Shoes = ({ data }: ShoesProps) => {
       </div>
 
       <div className="min-h-lvh">
-        <div id="filters" className="my-8">
+        <div id={filtersId} className="my-8">
           <div className="my-2 flex flex-wrap">
             {priceOptions.map((priceOption, index) => (
               <div
@@ -208,7 +210,7 @@ const Shoes = ({ data }: ShoesProps) => {
                 onClick={() => {
                   setPrice(priceOption);
 
-                  scrollIdIntoView("filters");
+                  scrollIdIntoView(filtersId);
 
                   changeParams({ price: priceOption });
                 }}
@@ -229,7 +231,7 @@ const Shoes = ({ data }: ShoesProps) => {
                 onClick={() => {
                   setType(typeOption);
 
-                  scrollIdIntoView("filters");
+                  scrollIdIntoView(filtersId);
 
                   changeParams({ type: typeOption });
                 }}
@@ -246,7 +248,7 @@ const Shoes = ({ data }: ShoesProps) => {
                 type="text"
                 value={find}
                 onClick={() => {
-                  scrollIdIntoView("filters");
+                  scrollIdIntoView(filtersId);
                 }}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   const nextFind = event.target.value;
@@ -265,7 +267,7 @@ const Shoes = ({ data }: ShoesProps) => {
                   onClick={() => {
                     setFind(initialFind);
 
-                    scrollIdIntoView("filters");
+                    scrollIdIntoView(filtersId);
 
                     changeParams({ find: initialFind });
                   }}
@@ -319,7 +321,7 @@ const Shoes = ({ data }: ShoesProps) => {
               {!!surpassingShoe && (
                 <div className="-mt-1">
                   <ScrollToButton id={`${surpassingShoe.id}`}>
-                    <div className=" text-xs">
+                    <div className="text-xs">
                       {"<<"} {surpassingShoe.name}
                     </div>
                   </ScrollToButton>
@@ -330,14 +332,13 @@ const Shoes = ({ data }: ShoesProps) => {
         })}
 
         {processedData.length >= 20 && (
-          <div
-            onClick={() => {
-              scrollIdIntoView("filters");
-            }}
-            className={`my-8 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md bg-[rgb(29,30,31)] py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-          >
-            Jump to top
-          </div>
+          <ScrollToButton id={filtersId} classNames="w-full">
+            <div
+              className={`my-8 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md bg-[rgb(29,30,31)] py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+            >
+              Jump to top
+            </div>
+          </ScrollToButton>
         )}
 
         {!processedData.length && (
