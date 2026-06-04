@@ -1,5 +1,5 @@
 const encodeParam = (value: string | number) =>
-  encodeURIComponent(value).replace(/%20/g, "+");
+  encodeURIComponent(value).replace(/%20/g, "+").replace(/%2C/g, ",");
 
 export const generateQueryString = (
   originalParams: { key: string; value: string | number }[],
