@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import HomeButton from "./_components/HomeButton";
+import SectionButton from "./_components/SectionButton";
 
 export const metadata: Metadata = {
   title: "Run Rankings",
@@ -7,9 +7,9 @@ export const metadata: Metadata = {
 
 const HomePage = () => (
   <main>
-    <HomeButton text={"👫 Friends"} url={"/friends"} />
+    <SectionButton text={"👫 Friends"} url={"/friends"} />
 
-    <HomeButton text={"👠 Shoes"} url={"/shoes"} />
+    <SectionButton text={"👠 Shoes"} url={"/shoes"} />
   </main>
 );
 
