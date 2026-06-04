@@ -5,7 +5,7 @@ const AboutPageLogger = async () => {
   const resolvedHeaders = await headers();
   const host = resolvedHeaders.get("host");
 
-  const message = `Hi! Check out: http://${host}/about`;
+  const message = `Hi! Check out: https://${host}/about`;
 
   return <ClientLogger message={message} />;
 };
