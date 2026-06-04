@@ -25,13 +25,6 @@ const Roster = ({ data }: RosterProps) => {
     .map((string) => Number(string));
   const filteredData = data.filter(({ id }) => !idDenylist.includes(id));
 
-  const lastUpdated = filteredData
-    .flatMap((friend) =>
-      friend.groupings.map((grouping) => grouping.activities.updated_at),
-    )
-    .sort()
-    .at(-1) as string;
-
   const starts = filteredData
     .flatMap((friend) =>
       friend.groupings.map((grouping) => grouping.activities.start_date),
@@ -69,11 +62,7 @@ const Roster = ({ data }: RosterProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const findParam = searchParams.get("find");
-
-  const initialFind = "";
-
-  const [find, setFind] = useState(findParam || initialFind);
+  const idParam = searchParams.get("id");
 
   const rangeParam = searchParams.get("range");
 
@@ -83,7 +72,11 @@ const Roster = ({ data }: RosterProps) => {
     ) || rangeLabels[0],
   );
 
-  const idParam = searchParams.get("id");
+  const findParam = searchParams.get("find");
+
+  const initialFind = "";
+
+  const [find, setFind] = useState(findParam || initialFind);
 
   const changeParams = (newParams: { [key: string]: string | number }) => {
     const originalParams = [
@@ -164,6 +157,13 @@ const Roster = ({ data }: RosterProps) => {
         friend.firstActivity.start_date === latestFirstActivity.start_date,
     )
     .sort((a, b) => a.name.localeCompare(b.name));
+
+  const lastUpdated = filteredData
+    .flatMap((friend) =>
+      friend.groupings.map((grouping) => grouping.activities.updated_at),
+    )
+    .sort()
+    .at(-1) as string;
 
   const filtersId = "filters";
 
