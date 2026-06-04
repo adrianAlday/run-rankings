@@ -2,6 +2,7 @@ import "./globals.css";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/next";
 import AboutPageLogger from "./_components/AboutPageLogger";
+import LoadingWrapper from "./_components/LoadingWrapper";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ const Layout = ({ children }: Readonly<LayoutProps>) => (
             <div className="text-sm font-semibold my-4">🥇 Run Rankings</div>
           </Link>
 
-          {children}
+          <LoadingWrapper>{children}</LoadingWrapper>
 
           <AboutPageLogger />
 

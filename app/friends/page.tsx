@@ -1,7 +1,6 @@
 import { createClient } from "@/app/_utils/supabase/server";
 import { Metadata } from "next";
 import Roster from "../_components/Roster";
-import LoadingWrapper from "../_components/LoadingWrapper";
 
 export type FriendRow = {
   id: number;
@@ -16,7 +15,11 @@ export type FriendRow = {
   }[];
 };
 
-const DataWrapper = async () => {
+export const metadata: Metadata = {
+  title: "Roster - Run Rankings",
+};
+
+const RosterPage = async () => {
   const supabase = await createClient();
   const response = await supabase
     .from("friends")
@@ -28,19 +31,11 @@ const DataWrapper = async () => {
     console.log(error);
   }
 
-  return <Roster data={(data as unknown as FriendRow[]) || []} />;
+  return (
+    <main>
+      <Roster data={(data as unknown as FriendRow[]) || []} />;
+    </main>
+  );
 };
-
-export const metadata: Metadata = {
-  title: "Roster - Run Rankings",
-};
-
-const RosterPage = () => (
-  <main>
-    <LoadingWrapper>
-      <DataWrapper />
-    </LoadingWrapper>
-  </main>
-);
 
 export default RosterPage;

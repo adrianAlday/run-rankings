@@ -1,7 +1,6 @@
 import { createClient } from "@/app/_utils/supabase/server";
 import { Metadata } from "next";
 import Shoes from "../_components/Shoes";
-import LoadingWrapper from "../_components/LoadingWrapper";
 
 export type ShoeRow = {
   cold_energy_returned_fore: number;
@@ -15,7 +14,11 @@ export type ShoeRow = {
   weight: number;
 };
 
-const DataWrapper = async () => {
+export const metadata: Metadata = {
+  title: "Shoes - Run Rankings",
+};
+
+const ShoesPage = async () => {
   const supabase = await createClient();
   const response = await supabase
     .from("shoes")
@@ -27,19 +30,11 @@ const DataWrapper = async () => {
     console.log(error);
   }
 
-  return <Shoes data={(data as unknown as ShoeRow[]) || []} />;
+  return (
+    <main>
+      <Shoes data={(data as unknown as ShoeRow[]) || []} />;
+    </main>
+  );
 };
-
-export const metadata: Metadata = {
-  title: "Shoes - Run Rankings",
-};
-
-const ShoesPage = () => (
-  <main>
-    <LoadingWrapper>
-      <DataWrapper />
-    </LoadingWrapper>
-  </main>
-);
 
 export default ShoesPage;
