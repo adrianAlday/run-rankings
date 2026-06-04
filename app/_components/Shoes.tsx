@@ -177,8 +177,9 @@ const Shoes = ({ data }: ShoesProps) => {
             }
           >
             <div>
-              Grayed out if <span className="underline">Pareto-dominated</span>{" "}
-              i.e. some other shoe is bouncier and lighter and currently cheaper
+              Dimmed if <span className="underline">Pareto-dominated</span>,
+              some other shoe is bouncier <span className="italic">and</span>{" "}
+              lighter <span className="italic">and</span> currently cheaper
             </div>
           </Link>
         </div>
