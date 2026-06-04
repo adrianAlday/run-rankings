@@ -19,30 +19,34 @@ const DevPage = async () => {
   const referer = resolvedHeaders.get("referer");
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <div>Shoes</div>
 
       <Refetch url={"/api/shoes/refetch"} />
 
       <div>Friends</div>
 
-      <Link
-        target="_blank"
-        href={
-          `http://www.strava.com/oauth/authorize?` +
-          `&response_type=code` +
-          `&client_id=${process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID}` +
-          `&scope=activity:read_all` +
-          `&redirect_uri=http://${host}/api/dev/get-activities` +
-          `&state=${referer}`
-        }
-      >
-        <div>get activities</div>
-      </Link>
+      <button>
+        <Link
+          target="_blank"
+          href={
+            `http://www.strava.com/oauth/authorize?` +
+            `&response_type=code` +
+            `&client_id=${process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID}` +
+            `&scope=activity:read_all` +
+            `&redirect_uri=http://${host}/api/dev/get-activities` +
+            `&state=${referer}`
+          }
+        >
+          <div>get activities</div>
+        </Link>
+      </button>
 
-      <Link target="_blank" href={"/api/friends/get-groupings"}>
-        <div>get groupings</div>
-      </Link>
+      <button>
+        <Link target="_blank" href={"/api/friends/get-groupings"}>
+          <div>get groupings</div>
+        </Link>
+      </button>
 
       <Refetch url={"/api/friends/refetch"} />
     </div>
