@@ -22,3 +22,5 @@ export const getValueRgb = (value: number, valueColors: ValueColors) => {
       lowerColor + (higherCriteria[1][index] - lowerColor) * split,
   );
 };
+
+export const minimumBarWidth = 24;

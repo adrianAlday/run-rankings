@@ -1,6 +1,6 @@
 "use client";
 
-import { getValueRgb, ValueColors } from "@/app/_utils/colors";
+import { getValueRgb, minimumBarWidth, ValueColors } from "@/app/_utils/colors";
 import { ShoeRow } from "../shoes/page";
 import Link from "next/link";
 import LastUpdated from "./LastUpdated";
@@ -132,8 +132,6 @@ const Shoes = ({ data }: ShoesProps) => {
     .at(-1) as string;
 
   const filtersId = "filters";
-
-  const minimumWidth = 24;
 
   const valueColors: ValueColors = [
     [20, [239, 130, 119]], // red
@@ -308,7 +306,7 @@ const Shoes = ({ data }: ShoesProps) => {
                 <div
                   className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
                   style={{
-                    width: `calc( ( 100% - ${minimumWidth}px ) * ${relativeValue} + ${minimumWidth}px )`,
+                    width: `calc( ( 100% - ${minimumBarWidth}px ) * ${relativeValue} + ${minimumBarWidth}px )`,
                     backgroundColor: `rgb(${backgroundColor.join(",")})`,
                   }}
                 >

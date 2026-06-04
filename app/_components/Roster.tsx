@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { FriendRow } from "../friends/page";
 import { useState, Fragment } from "react";
 import Link from "next/link";
-import { getValueRgb, ValueColors } from "@/app/_utils/colors";
+import { getValueRgb, minimumBarWidth, ValueColors } from "@/app/_utils/colors";
 import LastUpdated from "./LastUpdated";
 import { usePathname, useSearchParams } from "next/navigation";
 import { generateQueryString, replaceUrl } from "../_utils/url";
@@ -130,7 +130,6 @@ const Roster = ({ data }: RosterProps) => {
 
   const values = shownFriends.map((friend) => friend.time);
   const maximumValue = Math.max(...values);
-  const minimumWidth = 24;
   const valueColors: ValueColors = [
     [0, [204, 120, 209]], // purple
     [3, [73, 159, 248]], // blue
@@ -314,7 +313,7 @@ const Roster = ({ data }: RosterProps) => {
                 <div
                   className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] transition-all duration-700 transition-discrete`}
                   style={{
-                    width: `calc( ( 100% - ${minimumWidth}px ) * ${relativeValue} + ${minimumWidth}px )`,
+                    width: `calc( ( 100% - ${minimumBarWidth}px ) * ${relativeValue} + ${minimumBarWidth}px )`,
                     backgroundColor: `rgb(${backgroundColor.join(",")})`,
                   }}
                 >
