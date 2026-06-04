@@ -20,3 +20,4 @@ export default HomePage;
 // also show absorption for trail?
 // add classnames library
 // kudos page
+// search icon in find bar
