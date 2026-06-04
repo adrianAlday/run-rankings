@@ -15,6 +15,7 @@ const HomePage = () => (
 
 export default HomePage;
 
+// to do:
 // make map of value variable name to db column name
 // also show absorption for trail?
 // add classnames library
