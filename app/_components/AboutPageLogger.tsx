@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import ClientLogger from "./ClientLogger";
+import { isDev } from "../_utils/isDev";
 
 const AboutPageLogger = async () => {
   const resolvedHeaders = await headers();
@@ -7,7 +8,7 @@ const AboutPageLogger = async () => {
 
   const message = `👋 Hey! Check out https://${host}/about`;
 
-  return <ClientLogger message={message} />;
+  return isDev ? null : <ClientLogger message={message} />;
 };
 
 export default AboutPageLogger;
