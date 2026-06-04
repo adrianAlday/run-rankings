@@ -16,6 +16,8 @@ const testIds = [
   13, // Midsole softness in cold (%)
 ];
 
+const categoryDataPageSize = 30;
+
 const getCategoryData = async (
   offset = 0,
   category = 2,
@@ -26,7 +28,7 @@ const getCategoryData = async (
 }> => {
   await new Promise((resolve) => setTimeout(resolve, 6 * 1000));
 
-  const url = `https://api.runrepeat.com/api/category/documents?c_id=${category}&orderBy=newest&size=30&from=${offset}`;
+  const url = `https://api.runrepeat.com/api/category/documents?c_id=${category}&orderBy=newest&size=${categoryDataPageSize}&from=${offset}`;
 
   if (isDev) {
     console.log(url);
@@ -117,7 +119,7 @@ export const GET = async (request: Request) => {
       break;
     }
 
-    offset = offset + 30;
+    offset = offset + categoryDataPageSize;
   }
 
   for (const [type, typeProductId] of Object.entries(typeProductIds)) {
