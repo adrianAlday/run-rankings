@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-type ButtonProps = { text: string; url: string };
+type HomeButtonProps = { text: string; url: string };
 
-const Button = ({ url, text }: ButtonProps) => {
+const HomeButton = ({ url, text }: HomeButtonProps) => {
   return (
     <Link target="_blank" href={url}>
       <div
@@ -16,4 +16,4 @@ const Button = ({ url, text }: ButtonProps) => {
   );
 };
 
-export default Button;
+export default HomeButton;
