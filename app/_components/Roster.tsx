@@ -11,6 +11,7 @@ import { encodeParam } from "../_utils/url";
 import BuiltBy from "./BuiltBy";
 import { normalizeStringForFind } from "../_utils/strings";
 import { scrollIdIntoView } from "../_utils/scroll";
+import ScrollToButton from "./ScrollToButton";
 
 type RosterProps = {
   data: FriendRow[];
@@ -167,6 +168,8 @@ const Roster = ({ data }: RosterProps) => {
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 
+  const filtersId = "filters";
+
   return (
     <div>
       <div className="my-8 text-xs">
@@ -225,7 +228,7 @@ const Roster = ({ data }: RosterProps) => {
       </div>
 
       <div className="min-h-lvh">
-        <div id="filters" className="my-8">
+        <div id={filtersId} className="my-8">
           <div className="my-4 flex flex-wrap">
             {rangeLabels.map((rangeLabel, index) => (
               <Fragment key={rangeLabel}>
@@ -237,7 +240,7 @@ const Roster = ({ data }: RosterProps) => {
                   onClick={() => {
                     setRange(rangeLabel);
 
-                    scrollIdIntoView("filters");
+                    scrollIdIntoView(filtersId);
 
                     changeParams({ range: rangeLabel });
                   }}
@@ -256,7 +259,7 @@ const Roster = ({ data }: RosterProps) => {
                 type="text"
                 value={find}
                 onClick={() => {
-                  scrollIdIntoView("filters");
+                  scrollIdIntoView(filtersId);
                 }}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   const nextFind = event.target.value;
@@ -265,7 +268,7 @@ const Roster = ({ data }: RosterProps) => {
 
                   setRange(goatOption);
 
-                  scrollIdIntoView("filters");
+                  scrollIdIntoView(filtersId);
 
                   changeParams({ range: goatOption, find: nextFind });
                 }}
@@ -332,14 +335,13 @@ const Roster = ({ data }: RosterProps) => {
         )}
 
         {shownFriends.length >= 20 && (
-          <div
-            onClick={() => {
-              scrollIdIntoView("filters");
-            }}
-            className={`my-8 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md bg-[rgb(29,30,31)] py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
-          >
-            Jump to top
-          </div>
+          <ScrollToButton id={filtersId} classNames="w-full">
+            <div
+              className={`my-8 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md bg-[rgb(29,30,31)] py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
+            >
+              Jump to top
+            </div>
+          </ScrollToButton>
         )}
 
         {!shownFriends.length && (
