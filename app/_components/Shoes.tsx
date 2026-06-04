@@ -69,6 +69,8 @@ const Shoes = ({ data }: ShoesProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const idParam = searchParams.get("id");
+
   const priceParam = searchParams.get("price");
 
   const [price, setPrice] = useState(
@@ -93,8 +95,6 @@ const Shoes = ({ data }: ShoesProps) => {
   const initialFind = "";
 
   const [find, setFind] = useState(findParam || initialFind);
-
-  const idParam = searchParams.get("id");
 
   const changeParams = (newParams: { [key: string]: string | number }) => {
     const originalParams = [
@@ -126,13 +126,6 @@ const Shoes = ({ data }: ShoesProps) => {
       (a, b) => (b.score || 0) - (a.score || 0) || a.name.localeCompare(b.name),
     );
 
-  const lastUpdated = processedData
-    .map((shoe) => shoe.updated_at)
-    .sort()
-    .at(-1) as string;
-
-  const filtersId = "filters";
-
   const valueColors: ValueColors = [
     [20, [239, 130, 119]], // red
     [40, [249, 215, 73]], // yellow
@@ -140,6 +133,13 @@ const Shoes = ({ data }: ShoesProps) => {
     [80, [73, 159, 248]], // blue
     [100, [204, 120, 209]], // purple
   ];
+
+  const lastUpdated = processedData
+    .map((shoe) => shoe.updated_at)
+    .sort()
+    .at(-1) as string;
+
+  const filtersId = "filters";
 
   return (
     <div>
