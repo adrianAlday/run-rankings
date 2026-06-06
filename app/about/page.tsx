@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Roster - About ",
+  title: "About - Run Rankings",
 };
 
 const AboutPage = () => {

@@ -16,7 +16,7 @@ export type FriendRow = {
 };
 
 export const metadata: Metadata = {
-  title: "Roster - Run Rankings",
+  title: "Friends - Run Rankings",
 };
 
 const RosterPage = async () => {
