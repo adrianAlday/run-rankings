@@ -32,7 +32,7 @@ const ShoesPage = async () => {
 
   return (
     <main>
-      <Shoes data={(data as unknown as ShoeRow[]) || []} />;
+      <Shoes data={(data as unknown as ShoeRow[]) || []} />
     </main>
   );
 };

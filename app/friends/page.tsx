@@ -33,7 +33,7 @@ const RosterPage = async () => {
 
   return (
     <main>
-      <Roster data={(data as unknown as FriendRow[]) || []} />;
+      <Roster data={(data as unknown as FriendRow[]) || []} />
     </main>
   );
 };
