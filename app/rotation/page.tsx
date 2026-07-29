@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: "Rotation - Run Rankings",
 };
 
+export const revalidate = 60 * 60;
+
 const RotationPage = async () => {
   const data = await fetch(
     `https://www.strava.com/athletes/${process.env.NEXT_PUBLIC_STRAVA_ID}/gear/shoes`,
@@ -22,7 +24,7 @@ const RotationPage = async () => {
           "",
         ),
       },
-      next: { revalidate: 60 * 60 },
+      next: { revalidate },
     },
   ).then(async (response) => await response.json());
 

@@ -171,7 +171,10 @@ const Roster = ({ data }: RosterProps) => {
     <div>
       <div className="my-8 text-xs">
         <div className="my-4">
-          <Link target="_blank" href={"https://www.strava.com/athletes/145082"}>
+          <Link
+            target="_blank"
+            href={`https://www.strava.com/athletes/${process.env.NEXT_PUBLIC_STRAVA_ID}`}
+          >
             Most fun friends ...based on time together on{" "}
             <span className="underline">Strava</span>
           </Link>
