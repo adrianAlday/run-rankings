@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Rotation - Run Rankings",
 };
 
-export const revalidate = 60 * 60;
+export const revalidate = 3600; // 60 * 60;
 
 const RotationPage = async () => {
   const data = await fetch(
