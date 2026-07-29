@@ -15,14 +15,14 @@ type ShoesProps = {
 };
 
 const Rotation = ({ data }: ShoesProps) => {
-  const otherBrand = "Other";
+  const otherBrand = "other";
 
   const initialProcessedData = data
     .filter((shoe) => shoe.total_distance !== "0")
     .map((shoe) => {
       const brand = ["Barefoot (No Shoes)", "No name"].includes(shoe.brand_name)
         ? otherBrand
-        : shoe.brand_name;
+        : capitalize(shoe.brand_name);
       const model =
         shoe.brand_name === "Barefoot (No Shoes)"
           ? "barefoot"
@@ -169,7 +169,7 @@ const Rotation = ({ data }: ShoesProps) => {
                 className={`mr-2 my-1 border border-[rgb(52,53,54)] hover:border-[rgb(74,119,145)] rounded-md ${brand === brandOption ? "bg-[rgb(36,50,59)]" : "bg-[rgb(29,30,31)]"} py-1 px-2 shrink-0 flex items-center justify-center text-xs font-medium transition-all duration-700 transition-discrete`}
               >
                 {capitalize(brandOption)}
-                {brandOption === allOption && " brands"}
+                {[allOption, otherBrand].includes(brandOption) && " brands"}
               </div>
             ))}
           </div>
