@@ -10,6 +10,8 @@ const HomePage = () => (
     <SectionButton text={"👫 Friends"} url={"/friends"} />
 
     <SectionButton text={"👠 Shoes"} url={"/shoes"} />
+
+    <SectionButton text={"💅 Rotation"} url={"/rotation"} />
   </main>
 );
 
@@ -21,3 +23,4 @@ export default HomePage;
 // add classnames library
 // kudos page
 // search icon in find bar
+// fetching activites but not groups?
