@@ -218,6 +218,10 @@ const Rotation = ({ data }: ShoesProps) => {
 
           const backgroundColor = getValueRgb(value, valueColors);
 
+          const sharedClasses = "border rounded-md p-1 text-xs font-semibold";
+
+          const text = `${Math.ceil(shoe.distance).toLocaleString()}${shoeIndex === 0 ? " miles" : ""}`;
+
           return (
             <div
               key={shoeIndex}
@@ -226,17 +230,22 @@ const Rotation = ({ data }: ShoesProps) => {
             >
               <div className="text-sm font-semibold">{shoe.name}</div>
 
-              <div
-                className={`border border-[rgb(42,43,44)] rounded-md p-1 text-right text-xs font-semibold text-[rgb(18,19,20)] text-nowrap transition-all duration-700 transition-discrete`}
-                style={{
-                  width: `calc( ( 100% - ${minimumBarWidth}px ) * ${relativeValue} + ${minimumBarWidth}px )`,
-                  backgroundColor: `rgb(${backgroundColor.join(",")})`,
-                }}
-              >
-                <span className="text-[rgb(189,190,191)] mix-blend-difference">
-                  {Math.ceil(shoe.distance).toLocaleString()}
-                  {shoeIndex === 0 && " miles"}
-                </span>
+              <div className="relative w-full">
+                <div
+                  className={`${sharedClasses} border-[rgb(42,43,44)] text-[rgb(18,19,20)] absolute text-right text-nowrap overflow-hidden transition-all duration-700 transition-discrete`}
+                  style={{
+                    width: `calc( ( 100% - ${minimumBarWidth}px ) * ${relativeValue} + ${minimumBarWidth}px )`,
+                    backgroundColor: `rgb(${backgroundColor.join(",")})`,
+                  }}
+                >
+                  {text}
+                </div>
+
+                <div
+                  className={`${sharedClasses} border-[rgb(18,19,20)] text-[rgb(189,190,191)]`}
+                >
+                  {text}
+                </div>
               </div>
             </div>
           );
