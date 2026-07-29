@@ -15,19 +15,19 @@ type ShoesProps = {
 };
 
 const Rotation = ({ data }: ShoesProps) => {
-  const noneBrand = "None";
+  const otherBrand = "Other";
 
   const initialProcessedData = data
     .filter((shoe) => shoe.total_distance !== "0")
     .map((shoe) => {
       const brand = ["Barefoot (No Shoes)", "No name"].includes(shoe.brand_name)
-        ? noneBrand
+        ? otherBrand
         : shoe.brand_name;
       const model =
         shoe.brand_name === "Barefoot (No Shoes)"
           ? "barefoot"
           : shoe.model_name;
-      const name = (brand === noneBrand ? "" : `${brand} `) + model;
+      const name = (brand === otherBrand ? "" : `${brand} `) + model;
       const distance = Number(shoe.total_distance.replaceAll(",", ""));
 
       return {
@@ -59,11 +59,11 @@ const Rotation = ({ data }: ShoesProps) => {
     allOption,
     ...[...new Set(initialProcessedData.map((shoe) => shoe.brand))].sort(
       (a, b) => {
-        if (a === noneBrand) {
+        if (a === otherBrand) {
           return 1;
         }
 
-        if (b === noneBrand) {
+        if (b === otherBrand) {
           return -1;
         }
 
