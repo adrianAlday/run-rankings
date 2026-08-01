@@ -24,3 +24,5 @@ export default HomePage;
 // kudos page
 // search icon in find bar
 // fetching activites but not groups?
+// add gear table to db
+// do rotation of last 90 days?
